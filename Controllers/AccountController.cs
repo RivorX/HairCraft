@@ -25,12 +25,24 @@ public class AccountController : Controller
     {
         if (ModelState.IsValid)
         {
+            // Sprawdzenie, czy użytkownik już istnieje
+            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
+            if (existingUser != null)
+            {
+                ViewBag.RegisterError = "Użytkownik z tym emailem już istnieje.";
+                return View(model);
+            }
+
+            // Dodaj użytkownika do bazy
             _context.Users.Add(model);
             await _context.SaveChangesAsync();
             return RedirectToAction("Login");
         }
+
+        // Jeśli walidacja nie powiodła się, wyświetl formularz ponownie
         return View(model);
     }
+
 
     public IActionResult Login()
     {
@@ -40,28 +52,45 @@ public class AccountController : Controller
     [HttpPost]
     public async Task<IActionResult> Login(string email, string password)
     {
-        var user = await _context.Users
-            .FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
-        if (user != null)
+        if (string.IsNullOrEmpty(email))
         {
-            var claims = new List<Claim>
+            ModelState.AddModelError("email", "Adres email jest wymagany.");
+        }
+        if (string.IsNullOrEmpty(password))
+        {
+            ModelState.AddModelError("password", "Hasło jest wymagane.");
+        }
+
+        if (ModelState.IsValid)
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
+            if (user != null)
+            {
+                // Utworzenie roszczenia
+                var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Email),
                 new Claim(ClaimTypes.Role, user.Role)
             };
 
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var authProperties = new AuthenticationProperties
-            {
-                IsPersistent = true
-            };
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var authProperties = new AuthenticationProperties
+                {
+                    IsPersistent = true // Zalogowany użytkownik na stałe
+                };
 
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
-            return RedirectToAction("Index", "Home");
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Komunikat o błędzie, gdy dane logowania są błędne
+            ViewBag.LoginError = "Nieprawidłowy email lub hasło.";
         }
-        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+
         return View();
     }
+
 
     public IActionResult Logout()
     {
