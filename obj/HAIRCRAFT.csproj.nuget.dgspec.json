@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Studia\\sem5\\Inżynieria oprogramowania\\HAIRCRAFT\\HAIRCRAFT.csproj": {}
+    "D:\\studia\\HairCraft\\HAIRCRAFT.csproj": {}
   },
   "projects": {
-    "D:\\Studia\\sem5\\Inżynieria oprogramowania\\HAIRCRAFT\\HAIRCRAFT.csproj": {
+    "D:\\studia\\HairCraft\\HAIRCRAFT.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Studia\\sem5\\Inżynieria oprogramowania\\HAIRCRAFT\\HAIRCRAFT.csproj",
+        "projectUniqueName": "D:\\studia\\HairCraft\\HAIRCRAFT.csproj",
         "projectName": "HAIRCRAFT",
-        "projectPath": "D:\\Studia\\sem5\\Inżynieria oprogramowania\\HAIRCRAFT\\HAIRCRAFT.csproj",
-        "packagesPath": "C:\\Users\\Rafał\\.nuget\\packages\\",
-        "outputPath": "D:\\Studia\\sem5\\Inżynieria oprogramowania\\HAIRCRAFT\\obj\\",
+        "projectPath": "D:\\studia\\HairCraft\\HAIRCRAFT.csproj",
+        "packagesPath": "C:\\Users\\agnie\\.nuget\\packages\\",
+        "outputPath": "D:\\studia\\HairCraft\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Rafał\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\agnie\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -92,7 +88,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
