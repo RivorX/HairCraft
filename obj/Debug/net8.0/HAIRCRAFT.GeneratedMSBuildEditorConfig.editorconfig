@@ -9,47 +9,47 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = HAIRCRAFT
 build_property.RootNamespace = HAIRCRAFT
-build_property.ProjectDir = D:\studia\HairCraft\
+build_property.ProjectDir = D:\Studia\sem5\Inżynieria oprogramowania\HAIRCRAFT\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = D:\studia\HairCraft
+build_property.MSBuildProjectDirectory = D:\Studia\sem5\Inżynieria oprogramowania\HAIRCRAFT
 build_property._RazorSourceGeneratorDebug = 
 
-[D:/studia/HairCraft/Views/Account/Login.cshtml]
+[D:/Studia/sem5/Inżynieria oprogramowania/HAIRCRAFT/Views/Account/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/studia/HairCraft/Views/Account/Register.cshtml]
+[D:/Studia/sem5/Inżynieria oprogramowania/HAIRCRAFT/Views/Account/Register.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/studia/HairCraft/Views/Home/Index.cshtml]
+[D:/Studia/sem5/Inżynieria oprogramowania/HAIRCRAFT/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/studia/HairCraft/Views/Home/Privacy.cshtml]
+[D:/Studia/sem5/Inżynieria oprogramowania/HAIRCRAFT/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/studia/HairCraft/Views/Shared/Error.cshtml]
+[D:/Studia/sem5/Inżynieria oprogramowania/HAIRCRAFT/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/studia/HairCraft/Views/Shared/_ValidationScriptsPartial.cshtml]
+[D:/Studia/sem5/Inżynieria oprogramowania/HAIRCRAFT/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/studia/HairCraft/Views/_ViewImports.cshtml]
+[D:/Studia/sem5/Inżynieria oprogramowania/HAIRCRAFT/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/studia/HairCraft/Views/_ViewStart.cshtml]
+[D:/Studia/sem5/Inżynieria oprogramowania/HAIRCRAFT/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/studia/HairCraft/Views/Shared/_Layout.cshtml]
+[D:/Studia/sem5/Inżynieria oprogramowania/HAIRCRAFT/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-8rjdaeu8dt
