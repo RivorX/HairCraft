@@ -1,4 +1,7 @@
-﻿<div class="container mt-5">
+﻿@using System.Security.Claims
+@model IEnumerable<HAIRCRAFT.Models.Salon>
+
+<div class="container mt-5">
     <div class="d-flex justify-content-between">
         <!-- Logo -->
         <img src="~/images/logo.jpg" alt="Logo" style="width: 150px; height: 150px; object-fit: cover; object-position: center;">
@@ -6,25 +9,58 @@
         <!-- Profil użytkownika w prawym górnym rogu -->
         @if (User.Identity.IsAuthenticated)
         {
+            // Zmienna sprawdzająca, czy fryzjer posiada salon
+            var userHasSalon = Model.Any(s => s.OwnerId.ToString() == User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+
             <div class="d-flex align-items-center">
                 <span class="me-3">Witaj, @User.Identity.Name!</span>
-                <form asp-action="Logout" method="post">
-                    <button type="submit" class="btn btn-outline-danger">Wyloguj się</button>
+
+                <form asp-action="Logout" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-outline-danger">
+                        <i class="fas fa-sign-out-alt"></i> Wyloguj się
+                    </button>
                 </form>
+
+                @if (!userHasSalon)
+                {
+                    <!-- Przycisk dodawania salonu, widoczny gdy fryzjer nie posiada salonu -->
+                    <a class="btn btn-success ms-2" asp-controller="Salon" asp-action="Create">
+                        <i class="fas fa-plus-circle"></i> Dodaj Salon
+                    </a>
+                }
+                else
+                {
+                        // Znajdź salon należący do zalogowanego użytkownika
+                        var userSalon = Model.FirstOrDefault(s => s.OwnerId.ToString() == User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+                    @if (userSalon != null)
+                    {
+                        <!-- Pokaż przycisk Edytuj Salon tylko, jeśli salon istnieje -->
+                        <a class="btn btn-info ms-2" asp-controller="Salon" asp-action="Edit" asp-route-id="@userSalon.Id">
+                            <i class="fas fa-edit"></i> Edytuj Salon
+                        </a>
+                    }
+
+                }
             </div>
         }
         else
         {
             <div class="d-flex align-items-center">
-                <a class="btn btn-primary me-2" asp-controller="Account" asp-action="Register">Rejestracja</a>
-                <a class="btn btn-secondary" asp-controller="Account" asp-action="Login">Logowanie</a>
+                <a class="btn btn-primary me-2" asp-controller="Account" asp-action="Register">
+                    <i class="fas fa-user-plus"></i> Rejestracja
+                </a>
+                <a class="btn btn-secondary" asp-controller="Account" asp-action="Login">
+                    <i class="fas fa-sign-in-alt"></i> Logowanie
+                </a>
             </div>
         }
     </div>
 
     <h1 class="text-center mb-5">Witamy w systemie rezerwacji usług fryzjerskich</h1>
 
-    @if (Model.Count == 0)
+    @if (!Model.Any())
     {
         <div class="alert alert-warning text-center" role="alert">
             Brak salonów w twojej okolicy.

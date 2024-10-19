@@ -1,13 +1,21 @@
-﻿namespace HAIRCRAFT.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace HAIRCRAFT.Models
 {
     public class Salon
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string Address { get; set; }
-        public string Description { get; set; }
-        public int OwnerId { get; set; }  // Powiązanie z fryzjerem
-        public User Owner { get; set; }
-    }
 
+        [Required(ErrorMessage = "Nazwa jest wymagana.")]
+        public string Name { get; set; }
+
+        [Required(ErrorMessage = "Adres jest wymagany.")]
+        public string Address { get; set; }
+
+        public string Description { get; set; }
+
+        // Pole OwnerId, które będzie ustawiane automatycznie
+        public int OwnerId { get; set; }
+    }
 }
+

@@ -15,9 +15,10 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        var salons = _context.Salons.ToList();
-        return View(salons);
+        var salons = _context.Salons.ToList(); // Pobierz salony jako listê
+        return View(salons); // Przeka¿ listê do widoku
     }
+
 
     public IActionResult Register()
     {
