@@ -1,14 +1,19 @@
 ﻿using HAIRCRAFT.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext<IdentityUser>
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        : base(options)
+    {
+    }
 
     public DbSet<User> Users { get; set; }
     public DbSet<Salon> Salons { get; set; }
-    public DbSet<Service> Services { get; set; }
     public DbSet<Appointment> Appointments { get; set; }
+    public DbSet<Service> Services { get; set; } // Dodanie DbSet dla Service, jeśli jest potrzebny
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -27,9 +32,16 @@ public class ApplicationDbContext : DbContext
             .OnDelete(DeleteBehavior.Restrict); // Zmiana na Restrict (NO ACTION)
 
         modelBuilder.Entity<Appointment>()
-            .HasOne(a => a.Service) // Powiązanie z usługą
+            .HasOne(a => a.Salon) // Powiązanie z salonem
             .WithMany()
-            .HasForeignKey(a => a.ServiceId)
+            .HasForeignKey(a => a.SalonId)
             .OnDelete(DeleteBehavior.Cascade); // Pozostawienie kaskadowego usuwania
+
+        // W razie potrzeby, możesz dodać powiązanie z Service
+        // modelBuilder.Entity<Appointment>()
+        //     .HasOne(a => a.Service) // Zakładając, że masz właściwość Service w Appointment
+        //     .WithMany()
+        //     .HasForeignKey(a => a.ServiceId) // Musisz mieć ServiceId w Appointment
+        //     .OnDelete(DeleteBehavior.Cascade); // Kaskadowe usuwanie
     }
 }

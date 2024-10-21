@@ -1,100 +1,77 @@
-﻿using HAIRCRAFT.Models;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 using System.Threading.Tasks;
+using HAIRCRAFT.Models;
 
 public class AccountController : Controller
 {
-    private readonly ApplicationDbContext _context;
+    private readonly UserManager<User> _userManager;
+    private readonly SignInManager<User> _signInManager;
 
-    public AccountController(ApplicationDbContext context)
+    public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
     {
-        _context = context;
+        _userManager = userManager;
+        _signInManager = signInManager;
     }
 
+    // Rejestracja
+    [HttpGet]
     public IActionResult Register()
     {
         return View();
     }
 
     [HttpPost]
-    public async Task<IActionResult> Register(User model)
+    public async Task<IActionResult> Register(RegisterViewModel model)
     {
         if (ModelState.IsValid)
         {
-            // Sprawdzenie, czy użytkownik już istnieje
-            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
-            if (existingUser != null)
+            var user = new User { UserName = model.Email, Email = model.Email, FullName = model.FullName, Role = model.Role };
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (result.Succeeded)
             {
-                ViewBag.RegisterError = "Użytkownik z tym emailem już istnieje.";
-                return View(model);
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                return RedirectToAction("Index", "Home");
             }
 
-            // Dodaj użytkownika do bazy
-            _context.Users.Add(model);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Login");
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
         }
 
-        // Jeśli walidacja nie powiodła się, wyświetl formularz ponownie
         return View(model);
     }
 
-
+    // Logowanie
+    [HttpGet]
     public IActionResult Login()
     {
         return View();
     }
 
     [HttpPost]
-    public async Task<IActionResult> Login(string email, string password)
+    public async Task<IActionResult> Login(LoginViewModel model)
     {
-        if (string.IsNullOrEmpty(email))
-        {
-            ModelState.AddModelError("email", "Adres email jest wymagany.");
-        }
-        if (string.IsNullOrEmpty(password))
-        {
-            ModelState.AddModelError("password", "Hasło jest wymagane.");
-        }
-
         if (ModelState.IsValid)
         {
-            var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
-            if (user != null)
+            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+            if (result.Succeeded)
             {
-                // Utworzenie roszczenia
-                var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.Email),
-                new Claim(ClaimTypes.Role, user.Role)
-            };
-
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var authProperties = new AuthenticationProperties
-                {
-                    IsPersistent = true // Zalogowany użytkownik na stałe
-                };
-
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
                 return RedirectToAction("Index", "Home");
             }
 
-            // Komunikat o błędzie, gdy dane logowania są błędne
-            ViewBag.LoginError = "Nieprawidłowy email lub hasło.";
+            ModelState.AddModelError(string.Empty, "Nieprawidłowa próba logowania.");
         }
 
-        return View();
+        return View(model);
     }
 
-
-    public IActionResult Logout()
+    // Wylogowanie
+    [HttpPost]
+    public async Task<IActionResult> Logout()
     {
-        HttpContext.SignOutAsync();
+        await _signInManager.SignOutAsync();
         return RedirectToAction("Index", "Home");
     }
 }

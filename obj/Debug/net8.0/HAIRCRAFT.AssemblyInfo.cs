@@ -11,10 +11,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.AspNetCore.Identity.UI.UIFrameworkAttribute("Bootstrap5")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("HAIRCRAFT")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+78a408dfa97ec7882af79799a2a13e31a413d24e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f9af38cf754d72f40025e0331d3f158eadf14161")]
 [assembly: System.Reflection.AssemblyProductAttribute("HAIRCRAFT")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HAIRCRAFT")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

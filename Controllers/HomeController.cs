@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -13,27 +15,32 @@ public class HomeController : Controller
         _context = context;
     }
 
+    // Wyœwietlanie listy salonów
     public IActionResult Index()
     {
-        var salons = _context.Salons.ToList(); // Pobierz salony jako listê
-        return View(salons); // Przeka¿ listê do widoku
+        var salons = _context.Salons.ToList(); // Pobranie salonów z bazy danych
+        return View(salons); // Przekazanie salonów do widoku
     }
 
-
+    // Widok rejestracji u¿ytkowników
+    [AllowAnonymous]
     public IActionResult Register()
     {
-        return View();
+        return RedirectToAction("Register", "Account"); // Przekierowanie do AccountController
     }
 
+    // Widok logowania u¿ytkowników
+    [AllowAnonymous]
     public IActionResult Login()
     {
-        return View();
+        return RedirectToAction("Login", "Account"); // Przekierowanie do AccountController
     }
 
-    public IActionResult Logout()
+    // Wylogowanie u¿ytkownika
+    [Authorize]
+    public async Task<IActionResult> Logout()
     {
-        // Zaloguj u¿ytkownika
-        HttpContext.SignOutAsync();
+        await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme); // Wylogowanie u¿ytkownika
         return RedirectToAction("Index");
     }
 }

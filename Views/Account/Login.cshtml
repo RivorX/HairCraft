@@ -1,4 +1,6 @@
-﻿@{
+﻿@model HAIRCRAFT.Models.LoginViewModel
+
+@{
     ViewData["Title"] = "Logowanie";
 }
 
@@ -18,24 +20,24 @@
             <form asp-action="Login" method="post" novalidate>
                 @* Walidacja błędów dla email *@
                 <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" id="email" name="email" class="form-control @(ViewData.ModelState.ContainsKey("email") && ViewData.ModelState["email"].Errors.Count > 0 ? "is-invalid" : "")" required />
+                    <label asp-for="Email" class="form-label">Email</label>
+                    <input asp-for="Email" type="email" class="form-control @(ViewData.ModelState.ContainsKey("Email") && ViewData.ModelState["Email"].Errors.Count > 0 ? "is-invalid" : "")" required />
                     <div class="invalid-feedback">
-                        @if (ViewData.ModelState.ContainsKey("email") && ViewData.ModelState["email"].Errors.Count > 0)
+                        @if (ViewData.ModelState.ContainsKey("Email") && ViewData.ModelState["Email"].Errors.Count > 0)
                         {
-                            @ViewData.ModelState["email"].Errors[0].ErrorMessage
+                            @ViewData.ModelState["Email"].Errors[0].ErrorMessage
                         }
                     </div>
                 </div>
 
                 @* Walidacja błędów dla hasła *@
                 <div class="mb-3">
-                    <label for="password" class="form-label">Hasło</label>
-                    <input type="password" id="password" name="password" class="form-control @(ViewData.ModelState.ContainsKey("password") && ViewData.ModelState["password"].Errors.Count > 0 ? "is-invalid" : "")" required />
+                    <label asp-for="Password" class="form-label">Hasło</label>
+                    <input asp-for="Password" type="password" class="form-control @(ViewData.ModelState.ContainsKey("Password") && ViewData.ModelState["Password"].Errors.Count > 0 ? "is-invalid" : "")" required />
                     <div class="invalid-feedback">
-                        @if (ViewData.ModelState.ContainsKey("password") && ViewData.ModelState["password"].Errors.Count > 0)
+                        @if (ViewData.ModelState.ContainsKey("Password") && ViewData.ModelState["Password"].Errors.Count > 0)
                         {
-                            @ViewData.ModelState["password"].Errors[0].ErrorMessage
+                            @ViewData.ModelState["Password"].Errors[0].ErrorMessage
                         }
                     </div>
                 </div>

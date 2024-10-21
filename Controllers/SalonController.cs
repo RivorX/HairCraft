@@ -5,26 +5,28 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using HAIRCRAFT.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 public class SalonController : Controller
 {
     private readonly ApplicationDbContext _context;
+    private readonly UserManager<IdentityUser> _userManager;
 
-    public SalonController(ApplicationDbContext context)
+
+    public SalonController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
     {
         _context = context;
+        _userManager = userManager;
     }
 
-    // Wyświetlenie listy salonów dla fryzjera
     [Authorize(Roles = "Fryzjer")]
     public IActionResult Index()
     {
-        var ownerId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Pobierz ID użytkownika
-        var salons = _context.Salons.Where(s => s.OwnerId.ToString() == ownerId).ToList(); // Porównaj OwnerId jako string
+        var ownerId = _userManager.GetUserId(User); // Używanie IdentityUser
+        var salons = _context.Salons.Where(s => s.OwnerId == ownerId).ToList();
         return View(salons);
     }
 
-    // Strona do tworzenia nowego salonu
     [HttpGet]
     [Authorize(Roles = "Fryzjer")]
     public IActionResult Create()
@@ -32,45 +34,22 @@ public class SalonController : Controller
         return View();
     }
 
-    // Obsługa tworzenia nowego salonu
     [HttpPost]
     [Authorize(Roles = "Fryzjer")]
     public async Task<IActionResult> Create(Salon salon)
     {
-        // Pobierz OwnerId z tożsamości użytkownika
-        var ownerIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
         if (ModelState.IsValid)
         {
-            // Sprawdzenie, czy fryzjer już ma salon
-            var existingSalon = await _context.Salons.FirstOrDefaultAsync(s => s.OwnerId.ToString() == ownerIdString);
-
-            if (existingSalon != null)
-            {
-                ModelState.AddModelError("", "Możesz posiadać tylko jeden salon.");
-                return View(salon);
-            }
-
-            // Ustawienie OwnerId przed dodaniem salonu
-            if (int.TryParse(ownerIdString, out int ownerId))
-            {
-                salon.OwnerId = ownerId; // Ustawienie OwnerId jako liczby całkowitej
-            }
-            else
-            {
-                ModelState.AddModelError("", "Niepoprawne ID właściciela: " + ownerIdString);
-                return View(salon);
-            }
+            var ownerId = _userManager.GetUserId(User); // Pobieranie aktualnego użytkownika
+            salon.OwnerId = ownerId;
 
             _context.Salons.Add(salon);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        // W przypadku błędów, zwróć widok z istniejącym modelem
         return View(salon);
     }
-
 
 
 
