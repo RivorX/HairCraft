@@ -12,7 +12,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Zarejestruj swoj¹ klasê User zamiast IdentityUser
 builder.Services.AddDefaultIdentity<User>(options =>
 {
-    options.SignIn.RequireConfirmedAccount = false;
+    // Konfiguracja opcji dotycz¹cych hase³
+    options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 1;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireLowercase = false;
+
+    options.SignIn.RequireConfirmedAccount = false;  // Bez potwierdzania konta
 })
     .AddEntityFrameworkStores<ApplicationDbContext>();
 

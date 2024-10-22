@@ -22,11 +22,19 @@ public class AccountController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Register(RegisterViewModel model)
     {
         if (ModelState.IsValid)
         {
-            var user = new User { UserName = model.Email, Email = model.Email, FullName = model.FullName, Role = model.Role };
+            var user = new User
+            {
+                UserName = model.Email,
+                Email = model.Email,
+                FullName = model.FullName,
+                Role = model.Role
+            };
+
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {

@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HAIRCRAFT")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f9af38cf754d72f40025e0331d3f158eadf14161")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4be1bea155bbb1ac07f2e406b8a2efee1e644587")]
 [assembly: System.Reflection.AssemblyProductAttribute("HAIRCRAFT")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HAIRCRAFT")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

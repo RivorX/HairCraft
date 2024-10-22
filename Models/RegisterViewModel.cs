@@ -1,15 +1,23 @@
-﻿namespace HAIRCRAFT.Models
+﻿using System.ComponentModel.DataAnnotations;
+namespace HAIRCRAFT.Models;
+public class RegisterViewModel
 {
-    public class RegisterViewModel
-    {
-        public string FullName { get; set; }
+    [Required]
+    public string FullName { get; set; }
 
-        public string Email { get; set; }
+    [Required]
+    [EmailAddress]
+    public string Email { get; set; }
 
-        public string Password { get; set; }
+    [Required]
+    [DataType(DataType.Password)]
+    public string Password { get; set; }
 
-        public string ConfirmPassword { get; set; }
+    [Required]
+    [DataType(DataType.Password)]
+    [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+    public string ConfirmPassword { get; set; }
 
-        public string Role { get; set; } // Możliwość wyboru roli: Fryzjer lub Klient
-    }
+    [Required]
+    public string Role { get; set; }
 }

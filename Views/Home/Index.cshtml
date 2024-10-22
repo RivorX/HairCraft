@@ -12,47 +12,51 @@
             // Sprawdź, czy użytkownik-fryzjer posiada już salon
             var userHasSalon = Model.Any(s => s.OwnerId == User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-                <div class="d-flex align-items-center">
-                    <span class="me-3">Witaj, @User.Identity.Name!</span>
+            <div class="d-flex align-items-center">
+                <span class="me-3">Witaj, @User.Identity.Name!</span>
 
-                    <form asp-action="Logout" method="post" class="d-inline">
-                        <button type="submit" class="btn btn-outline-danger">
-                            <i class="fas fa-sign-out-alt"></i> Wyloguj się
-                        </button>
-                    </form>
+                <form asp-action="Logout" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-outline-danger">
+                        <i class="fas fa-sign-out-alt"></i> Wyloguj się
+                    </button>
+                </form>
 
-                @if (!userHasSalon)
+                @* Sprawdź, czy użytkownik jest w roli Fryzjera *@
+                @if (User.IsInRole("Fryzjer"))
                 {
-                            <!-- Przycisk dodawania salonu, gdy fryzjer nie ma jeszcze salonu -->
-                            <a class="btn btn-success ms-2" asp-controller="Salon" asp-action="Create">
-                                <i class="fas fa-plus-circle"></i> Dodaj Salon
-                            </a>
-                }
-                else
-                {
-                    // Znajdź salon zalogowanego użytkownika
-                    var userSalon = Model.FirstOrDefault(s => s.OwnerId == User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-                    @if (userSalon != null)
+                    @if (!userHasSalon)
                     {
-                                    <!-- Przycisk do edytowania salonu, jeśli salon istnieje -->
-                                    <a class="btn btn-info ms-2" asp-controller="Salon" asp-action="Edit" asp-route-id="@userSalon.Id">
-                                        <i class="fas fa-edit"></i> Edytuj Salon
-                                    </a>
+                        <!-- Przycisk dodawania salonu, gdy fryzjer nie ma jeszcze salonu -->
+                        <a class="btn btn-success ms-2" asp-controller="Salon" asp-action="Create">
+                            <i class="fas fa-plus-circle"></i> Dodaj Salon
+                        </a>
+                    }
+                    else
+                    {
+                        // Znajdź salon zalogowanego użytkownika
+                        var userSalon = Model.FirstOrDefault(s => s.OwnerId == User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+                        @if (userSalon != null)
+                        {
+                            <!-- Przycisk do edytowania salonu, jeśli salon istnieje -->
+                            <a class="btn btn-info ms-2" asp-controller="Salon" asp-action="Edit" asp-route-id="@userSalon.Id">
+                                <i class="fas fa-edit"></i> Edytuj Salon
+                            </a>
+                        }
                     }
                 }
-                </div>
+            </div>
         }
         else
         {
-                <div class="d-flex align-items-center">
-                    <a class="btn btn-primary me-2" asp-controller="Account" asp-action="Register">
-                        <i class="fas fa-user-plus"></i> Rejestracja
-                    </a>
-                    <a class="btn btn-secondary" asp-controller="Account" asp-action="Login">
-                        <i class="fas fa-sign-in-alt"></i> Logowanie
-                    </a>
-                </div>
+            <div class="d-flex align-items-center">
+                <a class="btn btn-primary me-2" asp-controller="Account" asp-action="Register">
+                    <i class="fas fa-user-plus"></i> Rejestracja
+                </a>
+                <a class="btn btn-secondary" asp-controller="Account" asp-action="Login">
+                    <i class="fas fa-sign-in-alt"></i> Logowanie
+                </a>
+            </div>
         }
     </div>
 
@@ -60,27 +64,27 @@
 
     @if (!Model.Any())
     {
-            <div class="alert alert-warning text-center" role="alert">
-                Brak salonów w twojej okolicy.
-            </div>
+        <div class="alert alert-warning text-center" role="alert">
+            Brak salonów w twojej okolicy.
+        </div>
     }
     else
     {
-            <h3 class="text-center mb-4">Znajdź dostępne salony fryzjerskie:</h3>
+        <h3 class="text-center mb-4">Znajdź dostępne salony fryzjerskie:</h3>
 
-            <div class="row">
+        <div class="row">
             @foreach (var salon in Model)
             {
-                        <div class="col-md-4 mb-4">
-                            <div class="card h-100">
-                                <div class="card-body">
-                                    <h5 class="card-title">@salon.Name</h5>
-                                    <p class="card-text"><strong>Adres:</strong> @salon.Address</p>
-                                    <p class="card-text">@salon.Description</p>
-                                </div>
-                            </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">@salon.Name</h5>
+                            <p class="card-text"><strong>Adres:</strong> @salon.Address</p>
+                            <p class="card-text">@salon.Description</p>
                         </div>
+                    </div>
+                </div>
             }
-            </div>
+        </div>
     }
 </div>
