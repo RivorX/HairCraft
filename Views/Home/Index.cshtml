@@ -9,6 +9,9 @@
         <!-- Profil użytkownika w prawym górnym rogu -->
         @if (User.Identity.IsAuthenticated)
         {
+            <p>Jesteś zalogowany jako: @User.Identity.Name</p>
+            <p>Role: @string.Join(", ", User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value))</p>
+            // Sprawdzanie, czy użytkownik ma rolę Fryzjer
             // Sprawdź, czy użytkownik-fryzjer posiada już salon
             var userHasSalon = Model.Any(s => s.OwnerId == User.FindFirstValue(ClaimTypes.NameIdentifier));
 

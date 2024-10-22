@@ -3,15 +3,18 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using HAIRCRAFT.Models;
 
+
 public class AccountController : Controller
 {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
 
-    public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+    public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager)
     {
         _userManager = userManager;
         _signInManager = signInManager;
+        _roleManager = roleManager;
     }
 
     // Rejestracja
@@ -21,6 +24,7 @@ public class AccountController : Controller
         return View();
     }
 
+    // Rejestracja
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Register(RegisterViewModel model)
@@ -31,13 +35,19 @@ public class AccountController : Controller
             {
                 UserName = model.Email,
                 Email = model.Email,
-                FullName = model.FullName,
-                Role = model.Role
+                FullName = model.FullName
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
+                // Dodaj rolę do użytkownika
+                if (!await _roleManager.RoleExistsAsync("Fryzjer"))
+                {
+                    await _roleManager.CreateAsync(new IdentityRole("Fryzjer"));
+                }
+                await _userManager.AddToRoleAsync(user, "Fryzjer");
+
                 await _signInManager.SignInAsync(user, isPersistent: false);
                 return RedirectToAction("Index", "Home");
             }
@@ -51,6 +61,7 @@ public class AccountController : Controller
         return View(model);
     }
 
+
     // Logowanie
     [HttpGet]
     public IActionResult Login()
@@ -59,6 +70,8 @@ public class AccountController : Controller
     }
 
     [HttpPost]
+    // Logowanie
+    [HttpPost]
     public async Task<IActionResult> Login(LoginViewModel model)
     {
         if (ModelState.IsValid)
@@ -66,6 +79,9 @@ public class AccountController : Controller
             var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
             if (result.Succeeded)
             {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                var roles = await _userManager.GetRolesAsync(user);
+                // Sprawdź role i przekieruj użytkownika w odpowiedni sposób
                 return RedirectToAction("Index", "Home");
             }
 
@@ -74,6 +90,7 @@ public class AccountController : Controller
 
         return View(model);
     }
+
 
     // Wylogowanie
     [HttpPost]

@@ -1,5 +1,4 @@
 using HAIRCRAFT.Models;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,7 +9,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Zarejestruj swoj¹ klasê User zamiast IdentityUser
-builder.Services.AddDefaultIdentity<User>(options =>
+builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
     // Konfiguracja opcji dotycz¹cych hase³
     options.Password.RequireDigit = false;
@@ -21,8 +20,10 @@ builder.Services.AddDefaultIdentity<User>(options =>
 
     options.SignIn.RequireConfirmedAccount = false;  // Bez potwierdzania konta
 })
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders(); // Opcjonalnie, jeœli planujesz u¿ywaæ tokenów (np. do resetowania hase³)
 
+// Dodaj kontrolery i widoki
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 

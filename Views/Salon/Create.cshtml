@@ -2,36 +2,37 @@
 @{
     ViewData["Title"] = "Dodawanie salonu";
 }
+
 <div class="container mt-5">
     <h2>Dodaj nowy salon</h2>
 
     @if (!ViewData.ModelState.IsValid)
     {
-        <div class="alert alert-danger" role="alert">
-            <strong>Wystąpiły błędy podczas dodawania salonu:</strong>
-            <ul>
+            <div class="alert alert-danger" role="alert">
+                <strong>Wystąpiły błędy podczas dodawania salonu:</strong>
+                <ul>
                 @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
                 {
-                    <li>@error.ErrorMessage</li>
+                            <li>@error.ErrorMessage</li>
                 }
-            </ul>
-        </div>
+                </ul>
+            </div>
     }
 
-    <form asp-action="Create">
+    <form asp-action="Create" method="post">
         <div class="mb-3">
-            <label asp-for="Name" class="form-label"></label>
-            <input asp-for="Name" class="form-control" />
+            <label asp-for="Name" class="form-label">Nazwa salonu</label>
+            <input asp-for="Name" class="form-control" required />
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
         <div class="mb-3">
-            <label asp-for="Address" class="form-label"></label>
-            <input asp-for="Address" class="form-control" />
+            <label asp-for="Address" class="form-label">Adres salonu</label>
+            <input asp-for="Address" class="form-control" required />
             <span asp-validation-for="Address" class="text-danger"></span>
         </div>
         <div class="mb-3">
-            <label asp-for="Description" class="form-label"></label>
-            <textarea asp-for="Description" class="form-control"></textarea>
+            <label asp-for="Description" class="form-label">Opis salonu</label>
+            <textarea asp-for="Description" class="form-control" required></textarea>
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
         <button type="submit" class="btn btn-primary">Dodaj salon</button>
