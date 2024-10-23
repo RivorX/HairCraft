@@ -21,7 +21,7 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
     options.SignIn.RequireConfirmedAccount = false;  // Bez potwierdzania konta
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
-.AddDefaultTokenProviders(); // Opcjonalnie, jeœli planujesz u¿ywaæ tokenów (np. do resetowania hase³)
+.AddDefaultTokenProviders();
 
 // Dodaj kontrolery i widoki
 builder.Services.AddControllersWithViews();
