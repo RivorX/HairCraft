@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using HAIRCRAFT.Models;
 
-
 public class AccountController : Controller
 {
     private readonly UserManager<User> _userManager;
@@ -41,13 +40,19 @@ public class AccountController : Controller
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
-                // Dodaj rolę do użytkownika
-                if (!await _roleManager.RoleExistsAsync("Fryzjer"))
-                {
-                    await _roleManager.CreateAsync(new IdentityRole("Fryzjer"));
-                }
-                await _userManager.AddToRoleAsync(user, "Fryzjer");
+                // Pobierz wybraną rolę z formularza
+                var selectedRole = model.Role;
 
+                // Sprawdź, czy wybrana rola istnieje, jeśli nie, utwórz ją
+                if (!await _roleManager.RoleExistsAsync(selectedRole))
+                {
+                    await _roleManager.CreateAsync(new IdentityRole(selectedRole));
+                }
+
+                // Przypisz wybraną rolę użytkownikowi
+                await _userManager.AddToRoleAsync(user, selectedRole);
+
+                // Automatyczne zalogowanie użytkownika po rejestracji
                 await _signInManager.SignInAsync(user, isPersistent: false);
                 return RedirectToAction("Index", "Home");
             }
@@ -61,7 +66,6 @@ public class AccountController : Controller
         return View(model);
     }
 
-
     // Logowanie
     [HttpGet]
     public IActionResult Login()
@@ -70,8 +74,7 @@ public class AccountController : Controller
     }
 
     [HttpPost]
-    // Logowanie
-    [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(LoginViewModel model)
     {
         if (ModelState.IsValid)
@@ -91,9 +94,9 @@ public class AccountController : Controller
         return View(model);
     }
 
-
     // Wylogowanie
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout()
     {
         await _signInManager.SignOutAsync();
