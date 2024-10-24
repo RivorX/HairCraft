@@ -1,10 +1,8 @@
 ﻿@model HAIRCRAFT.Models.Salon
-@{
-    ViewData["Title"] = "Edycja salonu";
-}
+
 <div class="container mt-5">
     <h2>Edytuj salon</h2>
-    <form asp-action="Edit">
+    <form asp-action="Edit" method="post">
         <input type="hidden" asp-for="Id" />
         <div class="mb-3">
             <label asp-for="Name" class="form-label"></label>
@@ -20,6 +18,7 @@
             <label asp-for="Description" class="form-label"></label>
             <textarea asp-for="Description" class="form-control"></textarea>
             <span asp-validation-for="Description" class="text-danger"></span>
+            <input type="hidden" asp-for="OwnerId" />
         </div>
         <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
     </form>

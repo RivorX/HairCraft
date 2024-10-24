@@ -32,7 +32,6 @@ namespace HAIRCRAFT.Controllers
         [Authorize(Roles = "Fryzjer")]
         public IActionResult Create()
         {
-            // Pobieranie OwnerId z aktualnie zalogowanego użytkownika
             ViewBag.UserId = _userManager.GetUserId(User);
             return View();
         }
@@ -43,29 +42,13 @@ namespace HAIRCRAFT.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Przypisanie OwnerId do salonu
                 salon.OwnerId = salon.OwnerId ?? _userManager.GetUserId(User);
-
-                // Debugging: logowanie salon
-                Console.WriteLine($"Salon przed dodaniem: Name = {salon.Name}, OwnerId = {salon.OwnerId}");
-
                 _context.Salons.Add(salon);
                 await _context.SaveChangesAsync();
-
-                // Przekierowanie do Home/Index po utworzeniu salonu
                 return RedirectToAction("Index", "Home");
             }
-
-            // Jeśli ModelState nie jest ważny, logujemy błędy
-            Console.WriteLine("Błędy walidacji: ");
-            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-            {
-                Console.WriteLine(error.ErrorMessage);
-            }
-
             return View(salon);
         }
-
 
         [HttpGet]
         [Authorize(Roles = "Fryzjer")]
@@ -92,13 +75,43 @@ namespace HAIRCRAFT.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Update(salon);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    _context.Update(salon);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Index", "Home");
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!_context.Salons.Any(s => s.Id == salon.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Debug: Log exception to console for further inspection
+                    Console.WriteLine(ex.Message);
+                    ModelState.AddModelError("", "Wystąpił problem przy edytowaniu salonu. Proszę spróbować ponownie.");
+                }
+            }
+            else
+            {
+                // Debug: Log model state errors
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
+                foreach (var error in errors)
+                {
+                    Console.WriteLine(error.ErrorMessage);
+                }
             }
 
-            return View(salon);
+            return RedirectToAction("Index", "Home");
         }
+
 
         [HttpPost]
         [Authorize(Roles = "Fryzjer")]
@@ -118,7 +131,11 @@ namespace HAIRCRAFT.Controllers
 
             _context.Salons.Remove(salon);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            // Przekierowanie do Index w kontrolerze Home
+            return RedirectToAction("Index", "Home");
         }
+
+
     }
 }

@@ -2,16 +2,6 @@
 
 <div class="container mt-5">
     <h2>Dodaj nowy salon</h2>
-
-    @if (ViewBag.UserInfo != null)
-    {
-        <h3>Informacje o użytkowniku:</h3>
-        <p>Id: @ViewBag.UserInfo.Id</p>
-        <p>Imię i nazwisko: @ViewBag.UserInfo.FullName</p>
-        <p>Email: @ViewBag.UserInfo.Email</p>
-        <p>Nazwa użytkownika: @ViewBag.UserInfo.UserName</p>
-    }
-
     <form asp-action="Create" method="post">
         <div class="mb-3">
             <label asp-for="Name" class="form-label"></label>
@@ -28,10 +18,7 @@
             <textarea asp-for="Description" class="form-control"></textarea>
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
-
-        <!-- Użycie ViewBag.UserId jako wartości hidden -->
         <input type="hidden" name="OwnerId" value="@ViewBag.UserId" />
-
         <button type="submit" class="btn btn-primary">Dodaj salon</button>
     </form>
 </div>
