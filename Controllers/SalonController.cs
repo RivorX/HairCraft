@@ -33,8 +33,7 @@ namespace HAIRCRAFT.Controllers
         public IActionResult Create()
         {
             // Pobieranie OwnerId z aktualnie zalogowanego użytkownika
-            var ownerId = _userManager.GetUserId(User);
-            ViewBag.OwnerId = ownerId; // Możesz użyć ViewBag do przekazania OwnerId do widoku
+            ViewBag.UserId = _userManager.GetUserId(User);
             return View();
         }
 
@@ -52,7 +51,9 @@ namespace HAIRCRAFT.Controllers
 
                 _context.Salons.Add(salon);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
+                // Przekierowanie do Home/Index po utworzeniu salonu
+                return RedirectToAction("Index", "Home");
             }
 
             // Jeśli ModelState nie jest ważny, logujemy błędy
@@ -64,6 +65,7 @@ namespace HAIRCRAFT.Controllers
 
             return View(salon);
         }
+
 
         [HttpGet]
         [Authorize(Roles = "Fryzjer")]
