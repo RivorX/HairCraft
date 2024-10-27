@@ -41,17 +41,21 @@
 
                         @if (userSalon != null)
                         {
-                            <!-- Przycisk do edytowania salonu, jeśli salon istnieje -->
-                            <a class="btn btn-info ms-2" asp-controller="Salon" asp-action="Edit" asp-route-id="@userSalon.Id">
-                                <i class="fas fa-edit"></i> Edytuj Salon
-                            </a>
+                            @foreach (var salon in Model)
+                            {
+                                <div class="col-md-4 mb-4">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h5 class="card-title">@salon.Name</h5>
 
-                            <!-- Przycisk do usunięcia salonu -->
-                            <form asp-controller="Salon" asp-action="Delete" asp-route-id="@userSalon.Id" method="post" class="d-inline ms-2">
-                                <button type="submit" class="btn btn-danger">
-                                    <i class="fas fa-trash"></i> Usuń Salon
-                                </button>
-                            </form>
+                                            <!-- Przycisk do szczegółów salonu -->
+                                            <a class="btn btn-info" asp-controller="Salon" asp-action="Details" asp-route-id="@salon.Id">
+                                                <i class="fas fa-info-circle"></i> Szczegóły Salonu
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
 
                         }
                     }
@@ -92,6 +96,26 @@
                             <h5 class="card-title">@salon.Name</h5>
                             <p class="card-text"><strong>Adres:</strong> @salon.Address</p>
                             <p class="card-text">@salon.Description</p>
+
+                            <h6>Usługi:</h6>
+                            @if (salon.Services != null && salon.Services.Any())
+                            {
+                                <ul>
+                                    @foreach (var service in salon.Services)
+                                    {
+                                        <li>@service.Name (@service.Price zł)</li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <p class="text-muted">Brak dostępnych usług.</p>
+                            }
+
+                            <!-- Przycisk do szczegółów salonu -->
+                            <a class="btn btn-info" asp-controller="Salon" asp-action="Details" asp-route-id="@salon.Id">
+                                <i class="fas fa-info-circle"></i> Szczegóły Salonu
+                            </a>
                         </div>
                     </div>
                 </div>

@@ -2,6 +2,13 @@
 
 <div class="container mt-5">
     <h2>Dodaj nowy salon</h2>
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            <strong>Błąd:</strong> Nie udało się dodać salonu. Proszę sprawdzić wszystkie pola.
+        </div>
+    }
+
     <form asp-action="Create" method="post">
         <div class="mb-3">
             <label asp-for="Name" class="form-label"></label>
@@ -19,6 +26,7 @@
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
         <input type="hidden" name="OwnerId" value="@ViewBag.UserId" />
+
         <button type="submit" class="btn btn-primary">Dodaj salon</button>
     </form>
 </div>

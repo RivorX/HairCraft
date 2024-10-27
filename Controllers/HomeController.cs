@@ -18,9 +18,10 @@ public class HomeController : Controller
     // Wyœwietlanie listy salonów
     public IActionResult Index()
     {
-        var salons = _context.Salons.ToList(); // Pobranie salonów z bazy danych
-        return View(salons); // Przekazanie salonów do widoku
+        var salons = _context.Salons.Include(s => s.Services).ToList();
+        return View(salons);
     }
+
 
     // Widok rejestracji u¿ytkowników
     [AllowAnonymous]

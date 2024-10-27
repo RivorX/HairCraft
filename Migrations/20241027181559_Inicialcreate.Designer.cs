@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HAIRCRAFT.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241022195621_InicialCreate")]
-    partial class InicialCreate
+    [Migration("20241027181559_Inicialcreate")]
+    partial class Inicialcreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -77,11 +77,9 @@ namespace HAIRCRAFT.Migrations
 
                     b.Property<string>("OwnerId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OwnerId");
 
                     b.ToTable("Salons");
                 });
@@ -93,6 +91,10 @@ namespace HAIRCRAFT.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -348,21 +350,10 @@ namespace HAIRCRAFT.Migrations
                     b.Navigation("Salon");
                 });
 
-            modelBuilder.Entity("HAIRCRAFT.Models.Salon", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Owner");
-                });
-
             modelBuilder.Entity("HAIRCRAFT.Models.Service", b =>
                 {
                     b.HasOne("HAIRCRAFT.Models.Salon", "Salon")
-                        .WithMany()
+                        .WithMany("Services")
                         .HasForeignKey("SalonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -419,6 +410,11 @@ namespace HAIRCRAFT.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("HAIRCRAFT.Models.Salon", b =>
+                {
+                    b.Navigation("Services");
                 });
 #pragma warning restore 612, 618
         }

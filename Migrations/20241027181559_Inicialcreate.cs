@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HAIRCRAFT.Migrations
 {
     /// <inheritdoc />
-    public partial class InicialCreate : Migration
+    public partial class Inicialcreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -50,6 +50,22 @@ namespace HAIRCRAFT.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Salons",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OwnerId = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Salons", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -159,28 +175,6 @@ namespace HAIRCRAFT.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Salons",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Salons", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Salons_AspNetUsers_OwnerId",
-                        column: x => x.OwnerId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Appointments",
                 columns: table => new
                 {
@@ -216,6 +210,7 @@ namespace HAIRCRAFT.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SalonId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -279,11 +274,6 @@ namespace HAIRCRAFT.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Salons_OwnerId",
-                table: "Salons",
-                column: "OwnerId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Services_SalonId",
                 table: "Services",
                 column: "SalonId");
@@ -317,10 +307,10 @@ namespace HAIRCRAFT.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Salons");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Salons");
         }
     }
 }
