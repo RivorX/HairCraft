@@ -32,7 +32,6 @@ namespace HAIRCRAFT.Controllers
         [Authorize(Roles = "Fryzjer")]
         public IActionResult Create()
         {
-            ViewBag.UserId = _userManager.GetUserId(User);
             return View();
         }
 
