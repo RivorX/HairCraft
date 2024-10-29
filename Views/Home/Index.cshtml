@@ -2,78 +2,82 @@
 @model IEnumerable<HAIRCRAFT.Models.Salon>
 
 <div class="container mt-5">
-    <div class="d-flex justify-content-between">
-        <!-- Logo -->
-        <img src="~/images/logo.jpg" alt="Logo" style="width: 150px; height: 150px; object-fit: cover; object-position: center;">
 
-        <!-- Profil użytkownika w prawym górnym rogu -->
-        @if (User.Identity.IsAuthenticated)
-        {
-            <p>Jesteś zalogowany jako: @User.Identity.Name</p>
-            <p>Role: @string.Join(", ", User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value))</p>
+<style>
+    /* Tło tylko dla określonego diva */
+    .background-div {
+        background-image: url('/images/background.png');
+        background-size: cover;
+        background-position: center;
+        padding: 20px;
+        border-radius: 10px;
+    }
+</style>
 
-            <!-- Sprawdzanie, czy użytkownik ma rolę Fryzjer -->
-            var userHasSalon = Model.Any(s => s.OwnerId == User.FindFirstValue(ClaimTypes.NameIdentifier));
+<div class="d-flex justify-content-between background-div">
+    <!-- Logo -->
+    <img src="~/images/logo.jpg" alt="Logo" style="width: 150px; height: 150px; object-fit: cover; object-position: center;">
 
-            <div class="d-flex align-items-center">
-                <span class="me-3">Witaj, @User.Identity.Name!</span>
+    <!-- Profil użytkownika w prawym górnym rogu -->
+    @if (User.Identity.IsAuthenticated)
+    {
+        var userHasSalon = Model.Any(s => s.OwnerId == User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-                <form asp-action="Logout" method="post" class="d-inline">
-                    <button type="submit" class="btn btn-outline-danger">
-                        <i class="fas fa-sign-out-alt"></i> Wyloguj się
-                    </button>
-                </form>
+        <div class="d-flex align-items-center">
+            <span class="me-3">Witaj, @User.Identity.Name!</span>
 
-                @* Sprawdź, czy użytkownik jest w roli Fryzjera *@
-                @if (User.IsInRole("Fryzjer"))
+            <form asp-action="Logout" method="post" class="d-inline">
+                <button type="submit" class="btn btn-outline-danger">
+                    <i class="fas fa-sign-out-alt"></i> Wyloguj się
+                </button>
+            </form>
+
+            @if (User.IsInRole("Fryzjer"))
+            {
+                @if (!userHasSalon)
                 {
-                    @if (!userHasSalon)
-                    {
-                        <!-- Przycisk dodawania salonu, gdy fryzjer nie ma jeszcze salonu -->
-                        <a class="btn btn-success ms-2" asp-controller="Salon" asp-action="Create">
-                            <i class="fas fa-plus-circle"></i> Dodaj Salon
-                        </a>
-                    }
-                    else
-                    {
-                        // Znajdź salon zalogowanego użytkownika
-                        var userSalon = Model.FirstOrDefault(s => s.OwnerId == User.FindFirstValue(ClaimTypes.NameIdentifier));
+                    <a class="btn btn-success ms-2" asp-controller="Salon" asp-action="Create">
+                        <i class="fas fa-plus-circle"></i> Dodaj Salon
+                    </a>
+                }
+                else
+                {
+                    var userSalon = Model.FirstOrDefault(s => s.OwnerId == User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-                        @if (userSalon != null)
+                    @if (userSalon != null)
+                    {
+                        @foreach (var salon in Model)
                         {
-                            @foreach (var salon in Model)
-                            {
-                                <div class="col-md-4 mb-4">
-                                    <div class="card h-100">
-                                        <div class="card-body">
-                                            <h5 class="card-title">@salon.Name</h5>
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title">@salon.Name</h5>
 
-                                            <!-- Przycisk do szczegółów salonu -->
-                                            <a class="btn btn-info" asp-controller="Salon" asp-action="Details" asp-route-id="@salon.Id">
-                                                <i class="fas fa-info-circle"></i> Szczegóły Salonu
-                                            </a>
-                                        </div>
+                                        <a class="btn btn-info" asp-controller="Salon" asp-action="Details" asp-route-id="@salon.Id">
+                                            <i class="fas fa-info-circle"></i> Szczegóły Salonu
+                                        </a>
                                     </div>
                                 </div>
-                            }
-
+                            </div>
                         }
                     }
                 }
-            </div>
-        }
-        else
-        {
-            <div class="d-flex align-items-center">
-                <a class="btn btn-primary me-2" asp-controller="Account" asp-action="Register">
-                    <i class="fas fa-user-plus"></i> Rejestracja
-                </a>
-                <a class="btn btn-secondary" asp-controller="Account" asp-action="Login">
-                    <i class="fas fa-sign-in-alt"></i> Logowanie
-                </a>
-            </div>
-        }
-    </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="d-flex align-items-center">
+            <a class="btn btn-primary me-2" asp-controller="Account" asp-action="Register">
+                <i class="fas fa-user-plus"></i> Rejestracja
+            </a>
+            <a class="btn btn-secondary" asp-controller="Account" asp-action="Login">
+                <i class="fas fa-sign-in-alt"></i> Logowanie
+            </a>
+        </div>
+    }
+</div>
+
 
     <h1 class="text-center mb-5">Witamy w systemie rezerwacji usług fryzjerskich</h1>
 
