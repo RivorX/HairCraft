@@ -12,66 +12,146 @@
         padding: 20px;
         border-radius: 10px;
     }
+
+        /* Niestandardowe pastelowe kolory */
+        .btn-pastel-primary {
+            background-color: #c1e1ec; /* pastelowy niebieski */
+            color: #333;
+            border: none;
+            transition: transform 0.1s ease, background-color 0.3s ease;
+        }
+
+        .btn-pastel-primary:hover {
+            background-color: #a5d3e6;
+        }
+
+        .btn-pastel-primary:active {
+            transform: scale(0.95);
+            background-color: #94cbe0;
+        }
+
+        .btn-pastel-secondary {
+            background-color: #f0d9ff; /* pastelowy fiolet */
+            color: #333;
+            border: none;
+            transition: transform 0.1s ease, background-color 0.3s ease;
+        }
+
+            .btn-pastel-secondary:hover {
+                background-color: #e4c1fb;
+            }
+
+            .btn-pastel-secondary:active {
+                transform: scale(0.95);
+                background-color: #d1a8f5;
+            }
+
+        /* Efekt animacji na przyciskach pastelowych */
+        .effect-5 {
+            position: relative;
+            transition: all 0.2s linear;
+            padding-left: 20px; /* Odstęp na ikonę */
+        }
+
+            .effect-5:before {
+                content: "\f054"; /* Kod ikony FontAwesome (strzałka) */
+                font-family: FontAwesome;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: absolute;
+                top: 0;
+                left: 10px;
+                height: 100%;
+                width: 30px;
+                background-color: rgba(0, 0, 0, 0.1); /* Transparentny overlay */
+                border-radius: 0 50% 50% 0;
+                transform: scale(0, 1);
+                transform-origin: left center;
+                transition: all 0.2s linear;
+            }
+
+            .effect-5:hover {
+                text-indent: 10px;
+            }
+
+                .effect-5:hover:before {
+                    transform: scale(1, 1);
+                }
+
+        .card-border-hover {
+            border: 2px solid #F0D9FF; /* Jasnofioletowa obwódka */
+            border-radius: 10px; /* Opcjonalnie zaokrąglenie rogów */
+            transition: box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+            .card-border-hover:hover {
+                border-color: #d1a8f5; /* Ciemniejszy odcień fioletu na hover */
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Efekt przyciemnienia */
+            }
+
+        .text-outline {
+            color: white; /* Biały tekst */
+            text-shadow: -0.8px -0.8px 0 #000, 0.8px -0.8px 0 #000, -0.8px 0.8px 0 #000, 0.8px 0.8px 0 #000; /* Czarna obwódka */
+        }
+
+
 </style>
 
 <div class="d-flex justify-content-between background-div">
     <!-- Logo -->
-    <img src="~/images/logo.jpg" alt="Logo" style="width: 150px; height: 150px; object-fit: cover; object-position: center;">
+    <img src="~/images/logo.jpg" alt="Logo" style="width: 150px; height: 150px; object-fit: cover; object-position: center ; opacity: 0.9; border-radius: 10px;">
 
     <!-- Profil użytkownika w prawym górnym rogu -->
     @if (User.Identity.IsAuthenticated)
     {
         var userHasSalon = Model.Any(s => s.OwnerId == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            <div class="d-flex justify-content-center align-items-center mb-3">
+                <span class="me-3 text-outline fs-2">Witaj, @User.Identity.Name!</span>
+        </div>
+            <div class="d-flex justify-content-center align-items-center mb-3">
 
-        <div class="d-flex align-items-center">
-            <span class="me-3">Witaj, @User.Identity.Name!</span>
+                <form asp-action="Logout" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-outline-danger">
+                        <i class="fas fa-sign-out-alt"></i> Wyloguj się
+                    </button>
+                </form>
 
-            <form asp-action="Logout" method="post" class="d-inline">
-                <button type="submit" class="btn btn-outline-danger">
-                    <i class="fas fa-sign-out-alt"></i> Wyloguj się
-                </button>
-            </form>
-
-            @if (User.IsInRole("Fryzjer"))
-            {
-                @if (!userHasSalon)
+                @if (User.IsInRole("Fryzjer"))
                 {
-                    <a class="btn btn-success ms-2" asp-controller="Salon" asp-action="Create">
-                        <i class="fas fa-plus-circle"></i> Dodaj Salon
-                    </a>
-                }
-                else
-                {
-                    var userSalon = Model.FirstOrDefault(s => s.OwnerId == User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-                    @if (userSalon != null)
+                    @if (!userHasSalon)
                     {
-                        @foreach (var salon in Model)
-                        {
-                            <div class="col-md-4 mb-4">
-                                <div class="card h-100">
-                                    <div class="card-body">
-                                        <h5 class="card-title">@salon.Name</h5>
+                        <a class="btn btn-success ms-2" asp-controller="Salon" asp-action="Create">
+                            <i class="fas fa-plus-circle"></i> Dodaj Salon
+                        </a>
+                    }
+                    else
+                    {
+                        var userSalon = Model.FirstOrDefault(s => s.OwnerId == User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-                                        <a class="btn btn-info" asp-controller="Salon" asp-action="Details" asp-route-id="@salon.Id">
-                                            <i class="fas fa-info-circle"></i> Szczegóły Salonu
-                                        </a>
-                                    </div>
+                        @if (userSalon != null)
+                        {
+                            foreach (var salon in Model)
+                            {
+                                <div class="card-body">
+                                    <a class="btn btn-info" asp-controller="Salon" asp-action="Details" asp-route-id="@salon.Id">
+                                        <i class="fas fa-info-circle"></i> Szczegóły Salonu
+                                    </a>
                                 </div>
-                            </div>
+                            }
                         }
                     }
                 }
-            }
-        </div>
+            </div>
+
     }
     else
     {
         <div class="d-flex align-items-center">
-            <a class="btn btn-primary me-2" asp-controller="Account" asp-action="Register">
+                <a class="btn btn-pastel-primary me-2 effect-5" asp-controller="Account" asp-action="Register">
                 <i class="fas fa-user-plus"></i> Rejestracja
             </a>
-            <a class="btn btn-secondary" asp-controller="Account" asp-action="Login">
+                <a class="btn btn-pastel-secondary effect-5" asp-controller="Account" asp-action="Login">
                 <i class="fas fa-sign-in-alt"></i> Logowanie
             </a>
         </div>
@@ -94,8 +174,8 @@
         <div class="row">
             @foreach (var salon in Model)
             {
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
+                <div class="col-md-4 mb-4 ">
+                    <div class="card h-100 card-border-hover">
                         <div class="card-body">
                             <h5 class="card-title">@salon.Name</h5>
                             <p class="card-text"><strong>Adres:</strong> @salon.Address</p>
@@ -127,3 +207,10 @@
         </div>
     }
 </div>
+<footer class="bg-light text-center text-lg-start mt-5">
+
+    <div class="text-center p-3 text-white" style=" border-radius: 10px; background-color:#8A5BA2">
+        &copy; 2024 Haircraft - Wszelkie prawa zastrzeżone.
+    </div>
+</footer>
+
