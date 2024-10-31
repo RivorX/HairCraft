@@ -1,0 +1,33 @@
+﻿@model HAIRCRAFT.Models.Salon
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8">
+            <h2>@Model.Name</h2>
+            <p><strong>Adres:</strong> @Model.Address</p>
+            <p><strong>Opis:</strong> @Model.Description</p>
+
+            <h4>Usługi dostępne w salonie:</h4>
+            @if (Model.Services != null && Model.Services.Any())
+            {
+                <ul class="list-group">
+                    @foreach (var service in Model.Services)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>@service.Name</span>
+                            <span class="badge bg-primary rounded-pill">@service.Price zł</span>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p class="text-muted">Brak dostępnych usług.</p>
+            }
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a class="btn btn-secondary" asp-controller="Home" asp-action="Index">Powrót do listy salonów</a>
+    </div>
+</div>

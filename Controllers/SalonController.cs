@@ -28,11 +28,10 @@ namespace HAIRCRAFT.Controllers
             var salons = _context.Salons.Where(s => s.OwnerId == ownerId).ToList();
             return View(salons);
         }
+        
 
-        // Wyświetlanie szczegółów salonu z listą usług
-        [HttpGet]
-        [Authorize(Roles = "Fryzjer")]
-        public async Task<IActionResult> Details(int id)
+        // Akcja dla widoku "Mój Salon"
+        public async Task<IActionResult> MySalonDetails(int id)
         {
             var salon = await _context.Salons
                 .Include(s => s.Services) // Załaduj usługi powiązane z salonem
@@ -49,8 +48,9 @@ namespace HAIRCRAFT.Controllers
                 return Forbid();
             }
 
-            return View(salon);
+            return View("Details", salon);
         }
+        
 
         [HttpGet]
         [Authorize(Roles = "Fryzjer")]
