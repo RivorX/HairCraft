@@ -1,0 +1,35 @@
+﻿@model HAIRCRAFT.Models.Salon
+
+<div class="container">
+    <h2>Zarezerwuj wizytę w salonie @Model.Name</h2>
+
+    <form asp-action="Book" asp-controller="Appointment" method="post">
+        <input type="hidden" name="salonId" value="@Model.Id" />
+
+        <div class="form-group">
+            <label for="service">Wybierz usługę:</label>
+            <select class="form-control" name="service" required>
+                @foreach (var service in ViewBag.Services)
+                {
+                    <option value="@service.Name">@service.Name (@service.Price zł)</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="appointmentDate">Wybierz datę i godzinę:</label>
+            <input type="datetime-local" name="appointmentDate" class="form-control" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Rezerwuj</button>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        // Datepicker for selecting date and time (optional)
+        $(function () {
+            $("#appointmentDate").datepicker();
+        });
+    </script>
+}

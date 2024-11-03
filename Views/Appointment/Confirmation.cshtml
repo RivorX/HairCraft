@@ -1,0 +1,14 @@
+﻿@model HAIRCRAFT.Models.Appointment
+
+<div class="container">
+    <h2>Potwierdzenie rezerwacji</h2>
+    <h3>Dziękujemy za dokonanie rezerwacji!</h3>
+
+    <p><strong>Klient:</strong> @Model.Client.UserName</p> <!-- Wyświetlenie nazwy użytkownika -->
+    <p><strong>Salon:</strong> @Model.Salon.Name</p>
+    <p><strong>Usługa:</strong> @Model.Service</p>
+    <p><strong>Data i godzina:</strong> @Model.AppointmentDate.ToString("g")</p>
+
+    <a class="btn btn-secondary" asp-controller="Home" asp-action="Index">Powrót do strony głównej</a>
+</div>
+
