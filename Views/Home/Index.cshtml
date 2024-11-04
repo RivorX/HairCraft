@@ -116,6 +116,12 @@
                         <i class="fas fa-sign-out-alt"></i> Wyloguj się
                     </button>
                 </form>
+                @if (User.IsInRole("Klient"))
+                {
+                    <a class="btn btn-success ms-2" asp-controller="Appointment" asp-action="MyAppointments">
+                        <i class="fas fa-calendar-check"></i> Moje Wizyty
+                    </a>
+                }
 
                 @if (User.IsInRole("Fryzjer"))
                 {

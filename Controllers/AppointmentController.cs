@@ -3,18 +3,57 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace HAIRCRAFT.Controllers
 {
+
     public class AppointmentController : Controller
     {
-        private readonly UserManager<User> _userManager; // Użyj swojej niestandardowej klasy User
-        private readonly ApplicationDbContext _context; // Zakładam, że masz ApplicationDbContext
+        private readonly UserManager<User> _userManager; 
+        private readonly ApplicationDbContext _context; 
 
         public AppointmentController(UserManager<User> userManager, ApplicationDbContext context)
         {
             _userManager = userManager;
             _context = context;
+        }
+
+        [Authorize] // Upewnij się, że użytkownik jest zalogowany
+        public async Task<IActionResult> MyAppointments()
+        {
+            var userId = _userManager.GetUserId(User);
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            // Pobierz wizyty zalogowanego użytkownika wraz z powiązanym salonem
+            var appointments = await _context.Appointments
+                .Where(a => a.ClientId == userId)
+                .Include(a => a.Salon)
+                .ToListAsync();
+
+            return View(appointments);
+        }
+
+        // Akcja do odwoływania wizyty
+        [HttpPost]
+        public async Task<IActionResult> CancelAppointment(int id)
+        {
+            var appointment = await _context.Appointments.FindAsync(id);
+
+            if (appointment == null)
+            {
+                return NotFound();
+            }
+
+            _context.Appointments.Remove(appointment);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(MyAppointments)); // Przekieruj do listy wizyt po anulowaniu
         }
 
         // Akcja wyświetlania formularza rezerwacji wizyty
