@@ -90,15 +90,32 @@ namespace HAIRCRAFT.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
+            // Sprawdzenie, czy dana godzina jest dostępna
+            var existingAppointment = await _context.Appointments
+                .Where(a => a.SalonId == appointment.SalonId &&
+                            a.AppointmentDate < appointment.AppointmentDate.AddMinutes(30) && // Zajęta godzina
+                            a.AppointmentDate.AddMinutes(30) > appointment.AppointmentDate)  // Zajęta godzina
+                .FirstOrDefaultAsync();
+
+            if (existingAppointment != null)
+            {
+                ModelState.AddModelError("", "Wybrana godzina jest już zajęta. Proszę wybrać inną.");
+
+                // Ustawienie dostępnych usług w przypadku błędu
+                var salon = await _context.Salons.Include(s => s.Services).FirstOrDefaultAsync(s => s.Id == appointment.SalonId);
+                if (salon == null)
+                {
+                    return NotFound(); // Jeśli salon nie istnieje, zwróć błąd
+                }
+
+                ViewBag.Services = salon.Services; // Przekazanie usług do widoku
+                ViewBag.SalonId = appointment.SalonId; // Przekazanie salonId do widoku
+
+                return View(salon); // Zwróć widok z modelem salonu
+            }
+
             // Ustawienie identyfikatora klienta jako zalogowanego użytkownika
             appointment.ClientId = userId;
-
-            // Sprawdzenie, czy dane są poprawne
-            if (appointment == null)
-            {
-                ModelState.AddModelError("", "Nieprawidłowe dane rezerwacji.");
-                return View(appointment); // Zwróć widok z błędami
-            }
 
             // Dodanie rezerwacji do bazy danych
             _context.Appointments.Add(appointment);
@@ -106,6 +123,7 @@ namespace HAIRCRAFT.Controllers
 
             return RedirectToAction("Confirmation", new { appointmentId = appointment.Id });
         }
+
 
 
         public async Task<IActionResult> Confirmation(int appointmentId)
@@ -124,6 +142,8 @@ namespace HAIRCRAFT.Controllers
             // Przekazanie modelu do widoku
             return View(appointment);
         }
+
+
 
     }
 }

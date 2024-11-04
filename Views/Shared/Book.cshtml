@@ -1,10 +1,23 @@
-﻿@model HAIRCRAFT.Models.Salon
+﻿@model HAIRCRAFT.Models.Appointment
+
+@{
+    var bookedAppointments = ViewBag.BookedAppointments as List<dynamic>;
+    var salonId = ViewBag.SalonId;
+}
+
+<style>
+    .text-muted {
+        color: #6c757d; /* Szary kolor */
+        text-decoration: line-through; /* Przekreślony tekst */
+        opacity: 0.6; /* Przezroczystość */
+    }
+</style>
 
 <div class="container">
-    <h2>Zarezerwuj wizytę w salonie @Model.Name</h2>
+    <h2>Zarezerwuj wizytę w salonie</h2>
 
     <form asp-action="Book" asp-controller="Appointment" method="post">
-        <input type="hidden" name="salonId" value="@Model.Id" />
+        <input type="hidden" name="SalonId" value="@salonId" />
 
         <div class="form-group">
             <label for="service">Wybierz usługę:</label>
@@ -17,8 +30,16 @@
         </div>
 
         <div class="form-group">
-            <label for="appointmentDate">Wybierz datę i godzinę:</label>
-            <input type="datetime-local" name="appointmentDate" class="form-control" required />
+            <label for="appointmentDate">Wybierz datę:</label>
+            <input type="date" id="appointmentDate" name="appointmentDate" class="form-control" required />
+        </div>
+
+        <div class="form-group">
+            <label for="appointmentTime">Wybierz godzinę:</label>
+            <select id="appointmentTime" name="appointmentTime" class="form-control" required>
+                <option value="">-- Wybierz godzinę --</option>
+                <!-- Godziny będą generowane dynamicznie -->
+            </select>
         </div>
 
         <button type="submit" class="btn btn-primary mt-3">Rezerwuj</button>
@@ -27,9 +48,52 @@
 
 @section Scripts {
     <script>
-        // Datepicker for selecting date and time (optional)
-        $(function () {
-            $("#appointmentDate").datepicker();
+        document.addEventListener("DOMContentLoaded", function () {
+            var bookedTimes = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(bookedAppointments));
+            var dateInput = document.getElementById('appointmentDate');
+            var timeSelect = document.getElementById('appointmentTime');
+
+            // Funkcja do aktualizacji dostępnych godzin
+            function updateAvailableTimes() {
+                var selectedDate = dateInput.value;
+                timeSelect.innerHTML = ''; // Wyczyść dostępne godziny
+
+                // Dodaj pierwszą opcję
+                var defaultOption = document.createElement('option');
+                defaultOption.value = "";
+                defaultOption.text = "-- Wybierz godzinę --";
+                timeSelect.appendChild(defaultOption);
+
+                if (selectedDate) {
+                    // Dodaj godziny do selecta
+                    for (let i = 0; i < 24; i++) {
+                        let hour = i < 10 ? '0' + i : i; // Dodaj zero przed godziną
+                        let timeSlot = document.createElement('option');
+                        timeSlot.value = hour + ':00';
+                        timeSlot.innerText = hour + ':00';
+
+                        // Sprawdź, czy godzina jest zajęta
+                        var isBooked = bookedTimes.some(function (appointment) {
+                            var startTime = new Date(appointment.StartTime);
+                            var endTime = new Date(appointment.EndTime);
+                            return selectedDate + 'T' + timeSlot.value >= startTime && selectedDate + 'T' + timeSlot.value < endTime;
+                        });
+
+                        if (isBooked) {
+                            timeSlot.disabled = true; // Wyłącz zajętą godzinę
+                            timeSlot.classList.add('text-muted'); // Użyj stylu do wizualizacji niedostępności
+                            timeSlot.innerText += ' (niedostępna)'; // Opcjonalnie dodaj informację o niedostępności
+                        }
+
+                        timeSelect.appendChild(timeSlot);
+                    }
+                }
+            }
+
+            // Aktualizuj dostępne godziny przy zmianie daty
+            dateInput.addEventListener('change', function () {
+                updateAvailableTimes();
+            });
         });
     </script>
 }
