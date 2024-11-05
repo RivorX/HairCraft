@@ -1,14 +1,42 @@
 ﻿@model HAIRCRAFT.Models.Appointment
 
-<div class="container">
+<style>
+    /* Styl dla nagłówków potwierdzenia */
+    h2 {
+        font-size: 2rem; /* Powiększenie czcionki nagłówka */
+        color: #28a745; /* Kolor zielony dla pozytywnego komunikatu */
+        margin-bottom: 1rem; /* Odstęp poniżej nagłówka */
+    }
+
+    h3 {
+        font-size: 1.5rem; /* Powiększenie czcionki podtytułu */
+        margin-bottom: 1.5rem; /* Odstęp poniżej podtytułu */
+    }
+
+    /* Styl dla kontenera potwierdzenia */
+    .confirmation-container {
+        background-color: rgba(255, 255, 255, 0.9); /* Lekko biały kolor tła */
+        border-radius: 10px; /* Zaokrąglenie rogów */
+        padding: 2rem; /* Odstęp wewnętrzny */
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Cień */
+    }
+
+    /* Styl dla szczegółów rezerwacji */
+    .reservation-details {
+        margin-bottom: 1rem; /* Odstęp poniżej każdego szczegółu */
+    }
+</style>
+
+<div class="container mt-5 confirmation-container">
     <h2>Potwierdzenie rezerwacji</h2>
     <h3>Dziękujemy za dokonanie rezerwacji!</h3>
 
-    <p><strong>Klient:</strong> @Model.Client.UserName</p> <!-- Wyświetlenie nazwy użytkownika -->
-    <p><strong>Salon:</strong> @Model.Salon.Name</p>
-    <p><strong>Usługa:</strong> @Model.Service</p>
-    <p><strong>Data i godzina:</strong> @Model.AppointmentDate.ToString("g")</p>
+    <div class="reservation-details">
+        <p><strong>Klient:</strong> @Model.Client.UserName</p> <!-- Wyświetlenie nazwy użytkownika -->
+        <p><strong>Salon:</strong> @Model.Salon.Name</p>
+        <p><strong>Usługa:</strong> @Model.Service</p>
+        <p><strong>Data i godzina:</strong> @Model.AppointmentDate.ToString("g")</p>
+    </div>
 
     <a class="btn btn-secondary" asp-controller="Home" asp-action="Index">Powrót do strony głównej</a>
 </div>
-

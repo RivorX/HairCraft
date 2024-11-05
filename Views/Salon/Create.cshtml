@@ -1,39 +1,82 @@
 ﻿@model HAIRCRAFT.Models.Salon
 
-<div class="container mt-5">
-    <h2>Dodaj nowy salon</h2>
-    @if (!ViewData.ModelState.IsValid)
-    {
-        <div class="alert alert-danger">
-            <strong>Błąd:</strong> Nie udało się dodać salonu. Proszę sprawdzić wszystkie pola.
-        </div>
+<style>
+    /* Styl dla nagłówka */
+    h2 {
+        font-size: 2.5rem; /* Powiększenie czcionki nagłówka */
+        color: #007bff; /* Kolor nagłówka */
+        margin-bottom: 1.5rem; /* Odstęp poniżej nagłówka */
     }
 
-    <form asp-action="Create" method="post">
-        <div class="mb-3">
-            <label asp-for="Name" class="form-label"></label>
-            <input asp-for="Name" class="form-control" />
-            <span asp-validation-for="Name" class="text-danger"></span>
-        </div>
-        <div class="mb-3">
-            <label asp-for="Address" class="form-label"></label>
-            <input asp-for="Address" class="form-control" />
-            <span asp-validation-for="Address" class="text-danger"></span>
-        </div>
-        <div class="mb-3">
-            <label asp-for="Description" class="form-label"></label>
-            <textarea asp-for="Description" class="form-control"></textarea>
-            <span asp-validation-for="Description" class="text-danger"></span>
-        </div>
-        <input type="hidden" name="OwnerId" value="@ViewBag.UserId" />
+    /* Kontener formularza */
+    .form-container {
+        background-color: rgba(255, 255, 255, 0.9); /* Lekko biały kolor tła */
+        border-radius: 10px; /* Zaokrąglenie rogów */
+        padding: 2rem; /* Odstęp wewnętrzny */
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Cień */
+    }
 
-        <button type="submit" class="btn btn-primary">Dodaj salon</button>
-    </form>
+    /* Styl grupy formularzy */
+    .mb-3 {
+        margin-bottom: 1.5rem; /* Odstęp między grupami formularzy */
+    }
 
-    <!-- Przycisk powrotu do szczegółów indexu -->
-    <div class="text-center mt-4">
-        <a class="btn btn-secondary" asp-controller="Home" asp-action="Index">
-            <i class="fas fa-arrow-left"></i> Wróć do strony głównej
-        </a>
+    /* Styl dla komunikatu błędu */
+    .alert {
+        margin-bottom: 1.5rem; /* Odstęp poniżej komunikatu błędu */
+    }
+
+    /* Styl przycisku */
+    .btn-primary {
+        transition: transform 0.2s ease; /* Dodanie efektu powiększania */
+    }
+
+    .btn-primary:hover {
+        transform: scale(1.05); /* Powiększenie przycisku na hover */
+    }
+
+    /* Styl dla przycisku powrotu */
+    .btn-secondary {
+        margin-top: 1rem; /* Odstęp nad przyciskiem powrotu */
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="form-container">
+        <h2>Dodaj nowy salon</h2>
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                <strong>Błąd:</strong> Nie udało się dodać salonu. Proszę sprawdzić wszystkie pola.
+            </div>
+        }
+
+        <form asp-action="Create" method="post">
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label">Nazwa salonu</label>
+                <input asp-for="Name" class="form-control" placeholder="Wprowadź nazwę salonu" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Address" class="form-label">Adres</label>
+                <input asp-for="Address" class="form-control" placeholder="Wprowadź adres salonu" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">Opis</label>
+                <textarea asp-for="Description" class="form-control" placeholder="Wprowadź opis salonu"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <input type="hidden" name="OwnerId" value="@ViewBag.UserId" />
+
+            <button type="submit" class="btn btn-primary">Dodaj salon</button>
+        </form>
+
+        <!-- Przycisk powrotu do szczegółów indexu -->
+        <div class="text-center mt-4">
+            <a class="btn btn-secondary" asp-controller="Home" asp-action="Index">
+                <i class="fas fa-arrow-left"></i> Wróć do strony głównej
+            </a>
+        </div>
     </div>
 </div>

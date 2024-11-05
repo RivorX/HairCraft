@@ -1,9 +1,43 @@
 ﻿@model HAIRCRAFT.Models.Salon
 
-<div class="container mt-5">
+<style>
+    /* Styl dla nagłówków salonu */
+    .salon-header {
+        font-size: 2rem; /* Powiększenie czcionki nagłówka */
+        color: #007bff; /* Kolor nagłówka */
+        margin-bottom: 1rem; /* Odstęp poniżej nagłówka */
+    }
+
+    /* Kontener salonu */
+    .salon-container {
+        background-color: rgba(255, 255, 255, 0.8); /* Lekko biały kolor tła */
+        border-radius: 10px; /* Zaokrąglenie rogów */
+        padding: 2rem; /* Odstęp wewnętrzny */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Cień */
+    }
+
+    /* Styl dla listy usług */
+    .list-group-item {
+        background-color: rgba(240, 240, 240, 0.8); /* Lekko szary kolor tła dla elementów listy */
+        border: none; /* Usunięcie obramowania */
+        border-radius: 8px; /* Zaokrąglenie rogów */
+        margin-bottom: 0.5rem; /* Odstęp między elementami listy */
+    }
+
+    /* Przyciski akcji */
+    .btn {
+        transition: transform 0.2s ease; /* Dodanie efektu powiększania */
+    }
+
+    .btn:hover {
+        transform: scale(1.05); /* Powiększenie przycisku na hover */
+    }
+</style>
+
+<div class="container mt-5 salon-container">
     <div class="row">
         <div class="col-md-8">
-            <h2>@Model.Name</h2>
+            <h2 class="salon-header">@Model.Name</h2>
             <p><strong>Adres:</strong> @Model.Address</p>
             <p><strong>Opis:</strong> @Model.Description</p>
 
@@ -27,7 +61,7 @@
         </div>
     </div>
 
-    <div class="mt-4">
+    <div class="mt-4 text-center">
         <!-- Przyciski akcji -->
         <a class="btn btn-success me-3" asp-controller="Appointment" asp-action="Book" asp-route-salonId="@Model.Id">
             <i class="fas fa-calendar-check"></i> Rezerwuj wizytę

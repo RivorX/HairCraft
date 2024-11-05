@@ -1,6 +1,152 @@
 ﻿@model IEnumerable<HAIRCRAFT.Models.Appointment>
 
-<div class="container py-5">
+<style>
+    /* Tło całej strony */
+    body {
+        background-image: url('/images/backgroundMyAppointments.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        min-height: 100vh;
+    }
+    /* Nowy efekt powiększania dla wszystkich przycisków */
+    .btn {
+        transition: transform 0.2s ease; /* Dodaj przejście dla efektu */
+    }
+
+        .btn:hover {
+            transform: scale(1.05); /* Powiększenie przycisku na hover */
+        }
+
+    /* Kontener dla treści */
+    .content-container {
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Niestandardowe pastelowe kolory */
+    .btn-pastel-primary,
+    .btn-pastel-secondary {
+        border-radius: 5px; /* Zaokrąglone rogi przycisków */
+        transition: transform 0.1s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .btn-pastel-primary {
+        background-color: #c1e1ec;
+        color: #333;
+    }
+
+        .btn-pastel-primary:hover {
+            background-color: #a5d3e6;
+        }
+
+        .btn-pastel-primary:active {
+            transform: scale(0.95);
+            background-color: #94cbe0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+    .btn-pastel-secondary {
+        background-color: #f0d9ff;
+        color: #333;
+    }
+
+        .btn-pastel-secondary:hover {
+            background-color: #e4c1fb;
+        }
+
+        .btn-pastel-secondary:active {
+            transform: scale(0.95);
+            background-color: #d1a8f5;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+    /* Efekt animacji na przyciskach pastelowych */
+    .effect-5 {
+        position: relative;
+        transition: all 0.2s linear;
+        padding-left: 20px;
+    }
+
+        .effect-5:before {
+            content: "\f054";
+            font-family: FontAwesome;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 0;
+            left: 10px;
+            height: 100%;
+            width: 30px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 0 50% 50% 0;
+            transform: scale(0, 1);
+            transform-origin: left center;
+            transition: all 0.2s linear;
+        }
+
+        .effect-5:hover {
+            text-indent: 10px;
+        }
+
+            .effect-5:hover:before {
+                transform: scale(1, 1);
+            }
+
+    .card-border-hover {
+        border: 2px solid #F0D9FF;
+        border-radius: 10px;
+        transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+        .card-border-hover:hover {
+            border-color: #d1a8f5;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+    .text-outline {
+        color: white;
+        text-shadow: -0.8px -0.8px 0 #000, 0.8px -0.8px 0 #000, -0.8px 0.8px 0 #000, 0.8px 0.8px 0 #000;
+    }
+
+    /* Dodatkowe style dla tabeli */
+    .table {
+        border-radius: 0.5rem;
+        overflow: hidden;
+        width: 100%;
+    }
+
+        .table th,
+        .table td {
+            vertical-align: middle;
+        }
+
+        .table th {
+            background-color: #343a40;
+            color: white;
+        }
+
+    .table-bordered th,
+    .table-bordered td {
+        border: 1px solid #dee2e6;
+    }
+
+    /* Podświetlenie aktywnego przycisku akordeonu */
+    .accordion-button:focus {
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5); /* Podświetlenie przycisku w focusie */
+    }
+
+    .accordion-button:not(.collapsed) {
+        background-color: #d1a8f5; /* Kolor tła dla aktywnego przycisku */
+        color: #333; /* Kolor tekstu dla aktywnego przycisku */
+    }
+
+</style>
+
+<div class="container py-5 content-container">
     <h2 class="text-center">Rezerwacje klientów dla salonu</h2>
 
     @if (!Model.Any())
@@ -18,83 +164,112 @@
         // Wyświetlanie dzisiejszych terminów
         if (todayAppointments.Any())
         {
-            <h4 class="mt-4">Dzisiejsze rezerwacje</h4>
-            <table class="table table-bordered mt-2">
-                <thead>
-                    <tr>
-                        <th>Data i godzina</th>
-                        <th>Klient</th>
-                        <th>Usługa</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var appointment in todayAppointments)
-                    {
-                        <tr>
-                            <td>@appointment.AppointmentDate.ToString("dd.MM.yyyy HH:mm")</td>
-                            <td>@appointment.Client.UserName</td>
-                            <td>@appointment.Service</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        }
+            <div class="accordion" id="appointmentsAccordion">
+                <div class="accordion-item">
+                    <h4 class="accordion-header" id="headingToday">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseToday" aria-expanded="true" aria-controls="collapseToday">
+                            Dzisiejsze rezerwacje
+                        </button>
+                    </h4>
+                    <div id="collapseToday" class="accordion-collapse collapse show" aria-labelledby="headingToday" data-bs-parent="#appointmentsAccordion">
+                        <div class="accordion-body">
+                            <table class="table table-bordered mt-2">
+                                <thead>
+                                    <tr>
+                                        <th>Data i godzina</th>
+                                        <th>Klient</th>
+                                        <th>Usługa</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var appointment in todayAppointments)
+                                    {
+                                        <tr>
+                                            <td>@appointment.AppointmentDate.ToString("dd.MM.yyyy HH:mm")</td>
+                                            <td>@appointment.Client.UserName</td>
+                                            <td>@appointment.Service</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
 
-        // Wyświetlanie przyszłych terminów
-        if (futureAppointments.Any())
-        {
-            <h4 class="mt-4">Przyszłe rezerwacje</h4>
-            <table class="table table-bordered mt-2">
-                <thead>
-                    <tr>
-                        <th>Data i godzina</th>
-                        <th>Klient</th>
-                        <th>Usługa</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var appointment in futureAppointments)
-                    {
-                        <tr>
-                            <td>@appointment.AppointmentDate.ToString("dd.MM.yyyy HH:mm")</td>
-                            <td>@appointment.Client.UserName</td>
-                            <td>@appointment.Service</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        }
-        // Wyświetlanie przeszłych terminów
-        if (pastAppointments.Any())
-        {
-            <h4 class="mt-4">Przeszłe rezerwacje</h4>
-            <table class="table table-bordered mt-2">
-                <thead>
-                    <tr>
-                        <th>Data i godzina</th>
-                        <th>Klient</th>
-                        <th>Usługa</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var appointment in pastAppointments) // lub futureAppointments / todayAppointments
-                    {
-                        <tr>
-                            <td>@appointment.AppointmentDate.ToString("dd.MM.yyyy HH:mm")</td>
-                            <td>@appointment.Client.UserName</td>
-                            <td>@appointment.Service</td> <!-- Poprawione, aby używać właściwości Name z obiektu Service -->
-                        </tr>
-                    }
+                @if (futureAppointments.Any()) // Wyświetlanie przyszłych terminów
+                {
+                    <div class="accordion-item">
+                        <h4 class="accordion-header" id="headingFuture">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFuture" aria-expanded="false" aria-controls="collapseFuture">
+                                Przyszłe rezerwacje
+                            </button>
+                        </h4>
+                        <div id="collapseFuture" class="accordion-collapse collapse" aria-labelledby="headingFuture" data-bs-parent="#appointmentsAccordion">
+                            <div class="accordion-body">
+                                <table class="table table-bordered mt-2">
+                                    <thead>
+                                        <tr>
+                                            <th>Data i godzina</th>
+                                            <th>Klient</th>
+                                            <th>Usługa</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var appointment in futureAppointments)
+                                        {
+                                            <tr>
+                                                <td>@appointment.AppointmentDate.ToString("dd.MM.yyyy HH:mm")</td>
+                                                <td>@appointment.Client.UserName</td>
+                                                <td>@appointment.Service</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }
 
-                </tbody>
-            </table>
+                @if (pastAppointments.Any()) // Wyświetlanie poprzednich wizyt
+                {
+                    <div class="accordion-item">
+                        <h4 class="accordion-header" id="headingPast">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePast" aria-expanded="false" aria-controls="collapsePast">
+                                Poprzednie wizyty
+                            </button>
+                        </h4>
+                        <div id="collapsePast" class="accordion-collapse collapse" aria-labelledby="headingPast" data-bs-parent="#appointmentsAccordion">
+                            <div class="accordion-body">
+                                <table class="table table-bordered mt-2">
+                                    <thead>
+                                        <tr>
+                                            <th>Data i godzina</th>
+                                            <th>Klient</th>
+                                            <th>Usługa</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var appointment in pastAppointments)
+                                        {
+                                            <tr>
+                                                <td>@appointment.AppointmentDate.ToString("dd.MM.yyyy HH:mm")</td>
+                                                <td>@appointment.Client.UserName</td>
+                                                <td>@appointment.Service</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
         }
     }
 
-    <!-- Przycisk powrotu do szczegółów salonu -->
     <div class="text-center mt-4">
-        <a asp-action="Details" asp-route-id="@ViewBag.SalonId" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Wróć do salonu
+        <a href="@Url.Action("Details", "Salon", new { id = Model.FirstOrDefault()?.SalonId })" class="btn btn-pastel-primary effect-5">
+            <i class="fas fa-arrow-left"></i> Powrót do szczegółów salonu
         </a>
     </div>
 </div>

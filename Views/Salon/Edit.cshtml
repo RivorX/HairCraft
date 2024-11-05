@@ -1,31 +1,69 @@
 ﻿@model HAIRCRAFT.Models.Salon
 
+<style>
+    /* Styl dla nagłówka */
+    h2 {
+        font-size: 2.5rem; /* Powiększenie czcionki nagłówka */
+        color: #007bff; /* Kolor nagłówka */
+        margin-bottom: 1.5rem; /* Odstęp poniżej nagłówka */
+    }
+
+    /* Kontener formularza */
+    .form-container {
+        background-color: rgba(255, 255, 255, 0.9); /* Lekko biały kolor tła */
+        border-radius: 10px; /* Zaokrąglenie rogów */
+        padding: 2rem; /* Odstęp wewnętrzny */
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Cień */
+    }
+
+    /* Styl grupy formularzy */
+    .mb-3 {
+        margin-bottom: 1.5rem; /* Odstęp między grupami formularzy */
+    }
+
+    /* Styl przycisku */
+    .btn-primary {
+        transition: transform 0.2s ease; /* Dodanie efektu powiększania */
+    }
+
+    .btn-primary:hover {
+        transform: scale(1.05); /* Powiększenie przycisku na hover */
+    }
+
+    /* Styl dla przycisku powrotu */
+    .btn-secondary {
+        margin-top: 1rem; /* Odstęp nad przyciskiem powrotu */
+    }
+</style>
+
 <div class="container mt-5">
-    <h2>Edytuj salon</h2>
-    <form asp-action="Edit" method="post">
-        <input type="hidden" asp-for="Id" />
-        <div class="mb-3">
-            <label asp-for="Name" class="form-label"></label>
-            <input asp-for="Name" class="form-control" />
-            <span asp-validation-for="Name" class="text-danger"></span>
+    <div class="form-container">
+        <h2>Edytuj salon</h2>
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label">Nazwa salonu</label>
+                <input asp-for="Name" class="form-control" placeholder="Wprowadź nazwę salonu" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Address" class="form-label">Adres</label>
+                <input asp-for="Address" class="form-control" placeholder="Wprowadź adres salonu" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">Opis</label>
+                <textarea asp-for="Description" class="form-control" placeholder="Wprowadź opis salonu"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+                <input type="hidden" asp-for="OwnerId" />
+            </div>
+            <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
+        </form>
+        <!-- Przycisk powrotu do szczegółów salonu -->
+        <div class="text-center mt-4">
+            <a asp-action="Details" asp-route-id="@ViewBag.SalonId" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Wróć do salonu
+            </a>
         </div>
-        <div class="mb-3">
-            <label asp-for="Address" class="form-label"></label>
-            <input asp-for="Address" class="form-control" />
-            <span asp-validation-for="Address" class="text-danger"></span>
-        </div>
-        <div class="mb-3">
-            <label asp-for="Description" class="form-label"></label>
-            <textarea asp-for="Description" class="form-control"></textarea>
-            <span asp-validation-for="Description" class="text-danger"></span>
-            <input type="hidden" asp-for="OwnerId" />
-        </div>
-        <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
-    </form>
-    <!-- Przycisk powrotu do szczegółów salonu -->
-    <div class="text-center mt-4">
-        <a asp-action="Details" asp-route-id="@ViewBag.SalonId" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Wróć do salonu
-        </a>
     </div>
 </div>

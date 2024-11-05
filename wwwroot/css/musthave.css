@@ -1,0 +1,40 @@
+﻿/* Nowy efekt powiększania dla wszystkich przycisków */
+.btn {
+    transition: transform 0.2s ease; /* Dodaj przejście dla efektu */
+}
+
+    .btn:hover {
+        transform: scale(1.05); /* Powiększenie przycisku na hover */
+    }
+/* Efekt animacji na przyciskach pastelowych */
+.effect-5 {
+    position: relative;
+    transition: all 0.2s linear;
+    padding-left: 20px;
+}
+
+    .effect-5:before {
+        content: "\f054";
+        font-family: FontAwesome;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 0;
+        left: 10px;
+        height: 100%;
+        width: 30px;
+        background-color: rgba(0, 0, 0, 0.1);
+        border-radius: 0 50% 50% 0;
+        transform: scale(0, 1);
+        transform-origin: left center;
+        transition: all 0.2s linear;
+    }
+
+    .effect-5:hover {
+        text-indent: 10px;
+    }
+
+        .effect-5:hover:before {
+            transform: scale(1, 1);
+        }

@@ -1,6 +1,37 @@
 ﻿@model HAIRCRAFT.Models.Salon
 
-<div class="container">
+<style>
+    /* Styl dla nagłówka rezerwacji */
+    h2 {
+        font-size: 2rem; /* Powiększenie czcionki nagłówka */
+        color: #007bff; /* Kolor nagłówka */
+        margin-bottom: 1.5rem; /* Odstęp poniżej nagłówka */
+    }
+
+    /* Styl dla kontenera rezerwacji */
+    .booking-container {
+        background-color: rgba(255, 255, 255, 0.9); /* Lekko biały kolor tła */
+        border-radius: 10px; /* Zaokrąglenie rogów */
+        padding: 2rem; /* Odstęp wewnętrzny */
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Cień */
+    }
+
+    /* Styl dla formularza */
+    .form-group {
+        margin-bottom: 1.5rem; /* Odstęp pomiędzy grupami formularza */
+    }
+
+    /* Styl przycisku */
+    .btn-primary {
+        transition: transform 0.2s ease; /* Dodanie efektu powiększania */
+    }
+
+    .btn-primary:hover {
+        transform: scale(1.05); /* Powiększenie przycisku na hover */
+    }
+</style>
+
+<div class="container mt-5 booking-container">
     <h2>Zarezerwuj wizytę w salonie @Model.Name</h2>
 
     <form asp-action="Book" asp-controller="Appointment" method="post">
@@ -11,14 +42,14 @@
             <select class="form-control" name="service" required>
                 @foreach (var service in ViewBag.Services)
                 {
-                    <option value="@service.Name">@service.Name (@service.Price zł)</option>
+                        <option value="@service.Name">@service.Name (@service.Price zł)</option>
                 }
             </select>
         </div>
 
         <div class="form-group">
             <label for="appointmentDate">Wybierz datę i godzinę:</label>
-            <input type="datetime-local" name="appointmentDate" class="form-control" required />
+            <input type="datetime-local" id="appointmentDate" name="appointmentDate" class="form-control" required />
         </div>
 
         <button type="submit" class="btn btn-primary mt-3">Rezerwuj</button>
@@ -26,10 +57,10 @@
 </div>
 
 @section Scripts {
-    <script>
-        // Datepicker for selecting date and time (optional)
-        $(function () {
-            $("#appointmentDate").datepicker();
-        });
-    </script>
+        <script>
+            // Datepicker for selecting date and time (optional)
+            $(function () {
+                $("#appointmentDate").datepicker();
+            });
+        </script>
 }

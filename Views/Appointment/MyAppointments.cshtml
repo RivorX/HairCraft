@@ -1,11 +1,45 @@
 ﻿@model IEnumerable<HAIRCRAFT.Models.Appointment>
 
-<div class="container">
+<style>
+    /* Styl dla nagłówka sekcji */
+    h2 {
+        margin-bottom: 1.5rem; /* Odstęp poniżej nagłówka */
+        color: #007bff; /* Kolor niebieski dla nagłówka */
+    }
+
+    /* Styl dla tabeli */
+    .table {
+        margin-top: 1rem; /* Odstęp powyżej tabeli */
+        border-collapse: collapse; /* Zmiana sposobu wyświetlania granic */
+    }
+
+    .table th, .table td {
+        padding: 1rem; /* Odstęp wewnętrzny dla komórek */
+        text-align: left; /* Wyrównanie tekstu do lewej */
+    }
+
+    .table th {
+        background-color: #f8f9fa; /* Kolor tła dla nagłówków tabeli */
+        font-weight: bold; /* Pogrubienie nagłówków */
+    }
+
+    .table tbody tr:hover {
+        background-color: #f1f1f1; /* Kolor tła dla wierszy po najechaniu myszką */
+    }
+
+    /* Styl dla przycisku odwołania wizyty */
+    .btn-danger {
+        padding: 0.5rem 1rem; /* Odstęp wewnętrzny przycisku */
+        border-radius: 5px; /* Zaokrąglenie rogów przycisku */
+    }
+</style>
+
+<div class="container mt-5">
     <h2>Twoje zarezerwowane wizyty</h2>
 
     @if (Model.Any())
     {
-        <table class="table">
+        <table class="table table-bordered">
             <thead>
                 <tr>
                     <th>Salon</th>
@@ -36,4 +70,5 @@
     {
         <p>Nie masz zarezerwowanych wizyt.</p>
     }
+    <a class="btn btn-secondary" asp-controller="Home" asp-action="Index">Powrót do strony głównej</a>
 </div>

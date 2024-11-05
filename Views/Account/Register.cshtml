@@ -4,9 +4,44 @@
     ViewData["Title"] = "Rejestracja";
 }
 
+<style>
+    /* Styl dla nagłówka */
+    h2 {
+        font-size: 2rem; /* Powiększenie czcionki nagłówka */
+        color: #007bff; /* Kolor nagłówka */
+    }
+
+    /* Styl dla kontenera rejestracji */
+    .registration-container {
+        background-color: rgba(255, 255, 255, 0.9); /* Lekko biały kolor tła */
+        border-radius: 10px; /* Zaokrąglenie rogów */
+        padding: 2rem; /* Odstęp wewnętrzny */
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Cień */
+    }
+
+    /* Styl dla komunikatów błędów */
+    .alert {
+        margin-bottom: 1rem; /* Odstęp poniżej komunikatu błędu */
+    }
+
+    /* Styl przycisku */
+    .btn-primary {
+        transition: transform 0.2s ease; /* Dodanie efektu powiększania */
+    }
+
+    .btn-primary:hover {
+        transform: scale(1.05); /* Powiększenie przycisku na hover */
+    }
+
+    /* Styl dla przycisku powrotu */
+    .btn-secondary {
+        margin-top: 1rem; /* Odstęp nad przyciskiem powrotu */
+    }
+</style>
+
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-6">
+        <div class="col-md-6 registration-container">
             <h2 class="text-center mb-4">Rejestracja</h2>
 
             @* Komunikaty o błędach *@
@@ -79,6 +114,7 @@
             </form>
         </div>
     </div>
+
     <!-- Przycisk powrotu do indexu -->
     <div class="text-center mt-4">
         <a asp-controller="Home" asp-action="Index" class="btn btn-secondary btn-lg">

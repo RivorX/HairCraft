@@ -1,13 +1,99 @@
 ﻿@model HAIRCRAFT.Models.Salon
+<style>
+    /* Tło dla kontenera salonu */
+    body {
+        background-image: url('/images/backgroundMyAppointments.png'); /* Ścieżka do obrazka tła */
+        background-size: cover; /* Pokrycie całej powierzchni */
+        background-position: center; /* Wyśrodkowanie tła */
+        background-repeat: no-repeat; /* Zapobiega powtarzaniu tła */
+        min-height: 100vh; /* Ustawienie minimalnej wysokości na 100% wysokości widoku */
+    }
+
+    .container{
+        background-color: rgba(255, 255, 255, 0.4); /* Lekko biały kolor tła */
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Kontener z lekko białym tłem */
+    .card {
+        background-color: rgba(255, 255, 255, 0.9); /* Lekko biały kolor tła */
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    /* Niestandardowe pastelowe kolory */
+    .btn-pastel-primary {
+        background-color: #c1e1ec; /* pastelowy niebieski */
+        color: #333;
+        border: none;
+        transition: transform 0.1s ease, background-color 0.3s ease;
+    }
+
+        .btn-pastel-primary:hover {
+            background-color: #a5d3e6;
+        }
+
+        .btn-pastel-primary:active {
+            transform: scale(0.95);
+            background-color: #94cbe0;
+        }
+
+    .btn-pastel-secondary {
+        background-color: #f0d9ff; /* pastelowy fiolet */
+        color: #333;
+        border: none;
+        transition: transform 0.1s ease, background-color 0.3s ease;
+    }
+
+        .btn-pastel-secondary:hover {
+            background-color: #e4c1fb;
+        }
+
+        .btn-pastel-secondary:active {
+            transform: scale(0.95);
+            background-color: #d1a8f5;
+        }
+
+    
+
+    /* Styl dla kart usług */
+    .card-border-hover {
+        border: 2px solid #F0D9FF; /* Jasnofioletowa obwódka */
+        border-radius: 10px; /* Opcjonalnie zaokrąglenie rogów */
+        transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+        .card-border-hover:hover {
+            border-color: #d1a8f5; /* Ciemniejszy odcień fioletu na hover */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Efekt przyciemnienia */
+        }
+
+    .text-outline {
+        color: white; /* Biały tekst */
+        text-shadow: -0.8px -0.8px 0 #000, 0.8px -0.8px 0 #000, -0.8px 0.8px 0 #000, 0.8px 0.8px 0 #000; /* Czarna obwódka */
+    }
+
+    /* Styl dla nagłówków */
+    .card-title {
+        color: #007bff; /* Kolor nagłówka */
+        font-weight: bold; /* Wytłuszczony tekst */
+    }
+
+    /* Styl dla przycisków edytowania i usuwania salonu */
+    .btn-lg {
+        font-size: 1.2rem; /* Rozmiar przycisków */
+        padding: 0.5rem 1rem; /* Odstęp wewnętrzny przycisków */
+    }
+</style>
 
 <div class="container py-5">
     <div class="text-center mb-5">
-        <h1 class="display-4 fw-bold">@Model.Name</h1>
+        <h1 class="display-4 fw-bold text-primary">@Model.Name</h1>
         <p class="lead text-muted">@Model.Description</p>
         <p><i class="fas fa-map-marker-alt text-primary"></i> <strong>Adres:</strong> @Model.Address</p>
     </div>
 
-    <div class="card shadow-sm mb-4">
+    <div class="card shadow-lg mb-4">
         <div class="card-body">
             <h3 class="card-title text-center">Usługi</h3>
 
@@ -29,7 +115,7 @@
                                             <i class="fas fa-edit"></i> Edytuj Usługę
                                         </a>
 
-                                        <form asp-action="DeleteService" asp-route-id="@service.Id" method="post" class="d-inline">
+                                        <form asp-action="DeleteService" asp-route-id="@service.Id" method="post" class="d-inline" onsubmit="return confirm('Czy na pewno chcesz usunąć tę usługę?');">
                                             <button type="submit" class="btn btn-danger btn-sm">
                                                 <i class="fas fa-trash"></i> Usuń Usługę
                                             </button>
@@ -48,22 +134,24 @@
         </div>
     </div>
 
+    <!-- Przycisk dodawania nowej usługi -->
+    <div class="text-center mb-4">
+        <a asp-action="AddService" asp-route-salonId="@Model.Id" class="btn btn-primary btn-lg">
+            <i class="fas fa-plus"></i> Dodaj Usługę
+        </a>
+    </div>
+
     <!-- Przyciski edytowania i usuwania salonu -->
     <div class="text-center mb-4">
         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning btn-lg me-2">
             <i class="fas fa-edit"></i> Edytuj Salon
         </a>
 
-        <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="d-inline">
+        <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="d-inline" onsubmit="return confirm('Czy na pewno chcesz usunąć ten salon?');">
             <button type="submit" class="btn btn-danger btn-lg">
                 <i class="fas fa-trash"></i> Usuń Salon
             </button>
         </form>
-
-        <!-- Przycisk dodawania nowej usługi -->
-        <a asp-action="AddService" asp-route-salonId="@Model.Id" class="btn btn-primary btn-lg">
-            <i class="fas fa-plus"></i> Dodaj Usługę
-        </a>
     </div>
 
     <!-- Przycisk wyświetlania rezerwacji -->
@@ -73,10 +161,10 @@
         </a>
     </div>
 
-    <!-- Przycisk powrotu do indexu -->
+    <!-- Przycisk powrotu do indexu z efektem animacji -->
     <div class="text-center mt-4">
-        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary btn-lg">
-            <i class="fas fa-arrow-left"></i> Wróć
+        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary btn-lg effect-5">
+            <i class="fas fa-arrow-left"></i> Powrót do listy salonów
         </a>
     </div>
 </div>
