@@ -63,9 +63,13 @@
 
     <div class="mt-4 text-center">
         <!-- Przyciski akcji -->
-        <a class="btn btn-success me-3" asp-controller="Appointment" asp-action="Book" asp-route-salonId="@Model.Id">
-            <i class="fas fa-calendar-check"></i> Rezerwuj wizytę
-        </a>
+        @if (User.IsInRole("Klient"))
+        {
+            <a class="btn btn-success me-3" asp-controller="Appointment" asp-action="Book" asp-route-salonId="@Model.Id">
+                <i class="fas fa-calendar-check"></i> Rezerwuj wizytę
+            </a>
+        }
+        
         <a class="btn btn-secondary" asp-controller="Home" asp-action="Index">Powrót do listy salonów</a>
     </div>
 </div>
