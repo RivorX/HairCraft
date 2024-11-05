@@ -12,5 +12,7 @@ namespace HAIRCRAFT.Models
         public string Description { get; set; }
         public string OwnerId { get; set; }
         public ICollection<Service> Services { get; set; } = new List<Service>(); // Dodajemy kolekcję usług
+        public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();   // Dodajemy kolekcję wizyt
+
     }
 }

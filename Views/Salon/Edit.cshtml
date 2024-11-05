@@ -22,4 +22,10 @@
         </div>
         <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
     </form>
+    <!-- Przycisk powrotu do szczegółów salonu -->
+    <div class="text-center mt-4">
+        <a asp-action="Details" asp-route-id="@ViewBag.SalonId" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Wróć do salonu
+        </a>
+    </div>
 </div>

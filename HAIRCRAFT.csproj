@@ -7,12 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\Nowy folder\**" />
     <Compile Remove="wwwroot\Nowy folder1\**" />
     <Compile Remove="wwwroot\Nowy folder\**" />
+    <Content Remove="Views\Nowy folder\**" />
     <Content Remove="wwwroot\Nowy folder1\**" />
     <Content Remove="wwwroot\Nowy folder\**" />
+    <EmbeddedResource Remove="Views\Nowy folder\**" />
     <EmbeddedResource Remove="wwwroot\Nowy folder1\**" />
     <EmbeddedResource Remove="wwwroot\Nowy folder\**" />
+    <None Remove="Views\Nowy folder\**" />
     <None Remove="wwwroot\Nowy folder1\**" />
     <None Remove="wwwroot\Nowy folder\**" />
   </ItemGroup>
@@ -33,7 +37,6 @@
   <ItemGroup>
     <Folder Include="Data\" />
     <Folder Include="Migrations\" />
-    <Folder Include="Views\Nowy folder\" />
   </ItemGroup>
 
 </Project>

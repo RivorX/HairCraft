@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HAIRCRAFT.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241027181559_Inicialcreate")]
-    partial class Inicialcreate
+    [Migration("20241105160026_start1")]
+    partial class start1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,7 +24,7 @@ namespace HAIRCRAFT.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Appointment", b =>
+            modelBuilder.Entity("HAIRCRAFT.Models.Appointment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -331,7 +331,7 @@ namespace HAIRCRAFT.Migrations
                     b.HasDiscriminator().HasValue("User");
                 });
 
-            modelBuilder.Entity("Appointment", b =>
+            modelBuilder.Entity("HAIRCRAFT.Models.Appointment", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Client")
                         .WithMany()
@@ -340,7 +340,7 @@ namespace HAIRCRAFT.Migrations
                         .IsRequired();
 
                     b.HasOne("HAIRCRAFT.Models.Salon", "Salon")
-                        .WithMany()
+                        .WithMany("Appointments")
                         .HasForeignKey("SalonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -414,6 +414,8 @@ namespace HAIRCRAFT.Migrations
 
             modelBuilder.Entity("HAIRCRAFT.Models.Salon", b =>
                 {
+                    b.Navigation("Appointments");
+
                     b.Navigation("Services");
                 });
 #pragma warning restore 612, 618

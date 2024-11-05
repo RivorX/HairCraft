@@ -1,0 +1,100 @@
+﻿@model IEnumerable<HAIRCRAFT.Models.Appointment>
+
+<div class="container py-5">
+    <h2 class="text-center">Rezerwacje klientów dla salonu</h2>
+
+    @if (!Model.Any())
+    {
+        <p class="text-center text-muted">Brak rezerwacji dla tego salonu.</p>
+    }
+    else
+    {
+        // Podział rezerwacji na przeszłe, dzisiejsze i przyszłe
+        var today = DateTime.Today;
+        var pastAppointments = Model.Where(a => a.AppointmentDate < today).OrderByDescending(a => a.AppointmentDate).ToList();
+        var todayAppointments = Model.Where(a => a.AppointmentDate.Date == today).OrderBy(a => a.AppointmentDate).ToList();
+        var futureAppointments = Model.Where(a => a.AppointmentDate > today).OrderBy(a => a.AppointmentDate).ToList();
+
+        // Wyświetlanie dzisiejszych terminów
+        if (todayAppointments.Any())
+        {
+            <h4 class="mt-4">Dzisiejsze rezerwacje</h4>
+            <table class="table table-bordered mt-2">
+                <thead>
+                    <tr>
+                        <th>Data i godzina</th>
+                        <th>Klient</th>
+                        <th>Usługa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var appointment in todayAppointments)
+                    {
+                        <tr>
+                            <td>@appointment.AppointmentDate.ToString("dd.MM.yyyy HH:mm")</td>
+                            <td>@appointment.Client.UserName</td>
+                            <td>@appointment.Service</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        // Wyświetlanie przyszłych terminów
+        if (futureAppointments.Any())
+        {
+            <h4 class="mt-4">Przyszłe rezerwacje</h4>
+            <table class="table table-bordered mt-2">
+                <thead>
+                    <tr>
+                        <th>Data i godzina</th>
+                        <th>Klient</th>
+                        <th>Usługa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var appointment in futureAppointments)
+                    {
+                        <tr>
+                            <td>@appointment.AppointmentDate.ToString("dd.MM.yyyy HH:mm")</td>
+                            <td>@appointment.Client.UserName</td>
+                            <td>@appointment.Service</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        // Wyświetlanie przeszłych terminów
+        if (pastAppointments.Any())
+        {
+            <h4 class="mt-4">Przeszłe rezerwacje</h4>
+            <table class="table table-bordered mt-2">
+                <thead>
+                    <tr>
+                        <th>Data i godzina</th>
+                        <th>Klient</th>
+                        <th>Usługa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var appointment in pastAppointments) // lub futureAppointments / todayAppointments
+                    {
+                        <tr>
+                            <td>@appointment.AppointmentDate.ToString("dd.MM.yyyy HH:mm")</td>
+                            <td>@appointment.Client.UserName</td>
+                            <td>@appointment.Service</td> <!-- Poprawione, aby używać właściwości Name z obiektu Service -->
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        }
+    }
+
+    <!-- Przycisk powrotu do szczegółów salonu -->
+    <div class="text-center mt-4">
+        <a asp-action="Details" asp-route-id="@ViewBag.SalonId" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Wróć do salonu
+        </a>
+    </div>
+</div>

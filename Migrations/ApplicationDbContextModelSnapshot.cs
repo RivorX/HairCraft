@@ -21,7 +21,7 @@ namespace HAIRCRAFT.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Appointment", b =>
+            modelBuilder.Entity("HAIRCRAFT.Models.Appointment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -36,18 +36,10 @@ namespace HAIRCRAFT.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Notes")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("SalonId")
                         .HasColumnType("int");
 
                     b.Property<string>("Service")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -336,7 +328,7 @@ namespace HAIRCRAFT.Migrations
                     b.HasDiscriminator().HasValue("User");
                 });
 
-            modelBuilder.Entity("Appointment", b =>
+            modelBuilder.Entity("HAIRCRAFT.Models.Appointment", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Client")
                         .WithMany()
@@ -345,7 +337,7 @@ namespace HAIRCRAFT.Migrations
                         .IsRequired();
 
                     b.HasOne("HAIRCRAFT.Models.Salon", "Salon")
-                        .WithMany()
+                        .WithMany("Appointments")
                         .HasForeignKey("SalonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -419,6 +411,8 @@ namespace HAIRCRAFT.Migrations
 
             modelBuilder.Entity("HAIRCRAFT.Models.Salon", b =>
                 {
+                    b.Navigation("Appointments");
+
                     b.Navigation("Services");
                 });
 #pragma warning restore 612, 618

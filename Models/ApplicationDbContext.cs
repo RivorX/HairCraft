@@ -22,7 +22,7 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
         // Ustawienie precyzji dla pola Price w modelu Service
         modelBuilder.Entity<Service>()
             .Property(s => s.Price)
-            .HasColumnType("decimal(18,2)"); // Precyzja: 18 cyfr, 2 miejsca po przecinku
+            .HasColumnType("decimal(18,2)"); // Precyzja: 18 cyfr, 2 miejsca po przecinku   
 
         // Ustawienie kluczy obcych dla Appointments
         modelBuilder.Entity<Appointment>()
@@ -33,9 +33,9 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
 
         modelBuilder.Entity<Appointment>()
             .HasOne(a => a.Salon) // Powiązanie z salonem
-            .WithMany()
+            .WithMany(s => s.Appointments) // Zdefiniowanie relacji w klasie Salon
             .HasForeignKey(a => a.SalonId)
-            .OnDelete(DeleteBehavior.Cascade); // Pozostawienie kaskadowego usuwania
+            .OnDelete(DeleteBehavior.Cascade); // Kaskadowe usuwanie
 
         // W razie potrzeby, możesz dodać powiązanie z Service
         // modelBuilder.Entity<Appointment>()

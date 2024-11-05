@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HAIRCRAFT.Migrations
 {
     /// <inheritdoc />
-    public partial class Inicialcreate : Migration
+    public partial class start : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -183,7 +183,8 @@ namespace HAIRCRAFT.Migrations
                     ClientId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Service = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AppointmentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    SalonId = table.Column<int>(type: "int", nullable: false)
+                    SalonId = table.Column<int>(type: "int", nullable: false),
+                    SalonId1 = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -200,6 +201,11 @@ namespace HAIRCRAFT.Migrations
                         principalTable: "Salons",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Appointments_Salons_SalonId1",
+                        column: x => x.SalonId1,
+                        principalTable: "Salons",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -209,8 +215,8 @@ namespace HAIRCRAFT.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     SalonId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -233,6 +239,11 @@ namespace HAIRCRAFT.Migrations
                 name: "IX_Appointments_SalonId",
                 table: "Appointments",
                 column: "SalonId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Appointments_SalonId1",
+                table: "Appointments",
+                column: "SalonId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

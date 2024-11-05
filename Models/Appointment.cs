@@ -9,10 +9,10 @@ namespace HAIRCRAFT.Models
         public string ClientId { get; set; }
         public IdentityUser Client { get; set; }
 
-        // Właściwość 'Service' jako string
         public string Service { get; set; }
-
         public DateTime AppointmentDate { get; set; }
+
+        // Klucz obcy do salonu
         public int SalonId { get; set; }
         public Salon Salon { get; set; }
     }

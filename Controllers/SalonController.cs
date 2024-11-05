@@ -31,7 +31,7 @@ namespace HAIRCRAFT.Controllers
         
 
         // Akcja dla widoku "Mój Salon"
-        public async Task<IActionResult> MySalonDetails(int id)
+        public async Task<IActionResult> Details(int id)
         {
             var salon = await _context.Salons
                 .Include(s => s.Services) // Załaduj usługi powiązane z salonem
@@ -106,7 +106,7 @@ namespace HAIRCRAFT.Controllers
             {
                 return Forbid();
             }
-
+            ViewBag.SalonId = salon.Id;
             return View(salon);
         }
 
@@ -158,6 +158,40 @@ namespace HAIRCRAFT.Controllers
 
             return RedirectToAction("Index", "Home");
         }
+
+        //-------------------------------------------------------------------------------- Rezerwacje --------------------------------------------------------------------------------
+        [Authorize]
+        public async Task<IActionResult> ViewAppointments(int salonId)
+        {
+            // Pobierz zalogowanego użytkownika
+            var ownerId = _userManager.GetUserId(User);
+            var salon = await _context.Salons
+                .Include(s => s.Appointments)
+                .ThenInclude(a => a.Client) // Pobieramy klienta powiązanego z rezerwacją
+                .FirstOrDefaultAsync(s => s.Id == salonId);
+
+            // Sprawdź, czy salon należy do zalogowanego fryzjera
+            if (salon == null || salon.OwnerId != ownerId)
+            {
+                return Forbid();
+            }
+
+            // Pobierz rezerwacje wraz z powiązanymi informacjami o kliencie
+            var appointments = await _context.Appointments
+                .Where(a => a.SalonId == salonId)
+                .Include(a => a.Client) // Zawiera klienta
+                .OrderBy(a => a.AppointmentDate) // Posortuj według daty
+                .ToListAsync();
+
+            // Przekaż listę rezerwacji do widoku
+            ViewBag.SalonId = salonId;
+            return View(appointments);
+        }
+
+
+
+
+
 
 
 
@@ -217,6 +251,7 @@ namespace HAIRCRAFT.Controllers
             {
                 return NotFound();
             }
+            ViewBag.SalonId = service.SalonId;
             return View(service);
         }
 
