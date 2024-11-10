@@ -15,5 +15,8 @@ namespace HAIRCRAFT.Models
         // Klucz obcy do salonu
         public int SalonId { get; set; }
         public Salon Salon { get; set; }
+
+        // Pole do przechowywania oceny wizyty (1-5)
+        public int? Rating { get; set; } // Używamy int?, aby wartość mogła być null, gdy jeszcze nie ma oceny
     }
 }

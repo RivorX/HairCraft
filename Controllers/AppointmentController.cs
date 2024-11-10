@@ -47,13 +47,21 @@ namespace HAIRCRAFT.Controllers
 
             if (appointment == null)
             {
-                return NotFound();
+                return NotFound(); // Jeśli wizyta nie istnieje, zwróć 404
             }
 
+            // Sprawdzamy, czy wizyta może być odwołana (np. nie jest już zakończona)
+            if (appointment.AppointmentDate <= DateTime.Now)
+            {
+                return BadRequest("Nie możesz odwołać wizyty, która już się odbyła.");
+            }
+
+            // Usuwamy wizytę
             _context.Appointments.Remove(appointment);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(MyAppointments)); // Przekieruj do listy wizyt po anulowaniu
+            // Po udanym usunięciu przekierowujemy do strony z wizytami
+            return RedirectToAction(nameof(MyAppointments));
         }
 
         // Akcja wyświetlania formularza rezerwacji wizyty
@@ -141,6 +149,26 @@ namespace HAIRCRAFT.Controllers
 
             // Przekazanie modelu do widoku
             return View(appointment);
+        }
+
+
+
+        // Akcja do oceniania wizyty
+        [HttpPost]
+        public async Task<IActionResult> RateAppointment([FromBody] RateAppointmentModel model)
+        {
+            var appointment = await _context.Appointments.FindAsync(model.AppointmentId);
+
+            if (appointment == null || appointment.AppointmentDate >= DateTime.Now)
+            {
+                return BadRequest("Nie można ocenić tej wizyty.");
+            }
+
+            // Dodaj ocenę do wizyty (wymaga odpowiedniego pola w modelu Appointment)
+            appointment.Rating = model.Rating;
+            await _context.SaveChangesAsync();
+
+            return Ok("Ocena została zapisana.");
         }
 
 

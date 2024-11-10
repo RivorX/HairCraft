@@ -1,74 +1,200 @@
 ﻿@model IEnumerable<HAIRCRAFT.Models.Appointment>
 
+@{
+    var token = @Html.AntiForgeryToken().ToString(); // Pobranie tokenu CSRF z formularza
+}
+
 <style>
     /* Styl dla nagłówka sekcji */
     h2 {
-        margin-bottom: 1.5rem; /* Odstęp poniżej nagłówka */
-        color: #007bff; /* Kolor niebieski dla nagłówka */
+        margin-bottom: 2rem;
+        color: #007bff;
+        font-weight: bold;
+        font-size: 1.8rem;
     }
 
-    /* Styl dla tabeli */
     .table {
-        margin-top: 1rem; /* Odstęp powyżej tabeli */
-        border-collapse: collapse; /* Zmiana sposobu wyświetlania granic */
+        margin-top: 1rem;
+        border-collapse: collapse;
+        width: 100%;
     }
 
-    .table th, .table td {
-        padding: 1rem; /* Odstęp wewnętrzny dla komórek */
-        text-align: left; /* Wyrównanie tekstu do lewej */
+        .table th, .table td {
+            padding: 1rem;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            color: #495057;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .table td p {
+            margin-bottom: 0;
+            color: #6c757d;
+        }
+
+    .star-rating {
+        display: flex;
+        gap: 5px;
+        justify-content: center;
     }
 
-    .table th {
-        background-color: #f8f9fa; /* Kolor tła dla nagłówków tabeli */
-        font-weight: bold; /* Pogrubienie nagłówków */
+    .star {
+        cursor: pointer;
+        font-size: 1.5rem;
+        color: #ccc;
+        transition: color 0.2s;
     }
 
-    .table tbody tr:hover {
-        background-color: #f1f1f1; /* Kolor tła dla wierszy po najechaniu myszką */
-    }
+        .star.selected {
+            color: #f39c12;
+        }
 
-    /* Styl dla przycisku odwołania wizyty */
     .btn-danger {
-        padding: 0.5rem 1rem; /* Odstęp wewnętrzny przycisku */
-        border-radius: 5px; /* Zaokrąglenie rogów przycisku */
+        background-color: #dc3545;
+        border: none;
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        transition: background-color 0.3s;
+    }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+    .btn-secondary {
+        margin-top: 1.5rem;
+        padding: 0.5rem 1rem;
+        background-color: #6c757d;
+        color: white;
+        border: none;
+        border-radius: 0.25rem;
+    }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+    .content-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
     }
 </style>
 
-<div class="container mt-5">
-    <h2>Twoje zarezerwowane wizyty</h2>
+<div class="container py-5 content-container">
+    <h2 class="text-center">Twoje zarezerwowane wizyty</h2>
 
-    @if (Model.Any())
+    @if (!Model.Any())
     {
-        <table class="table table-bordered">
+        <p class="text-center text-muted">Brak rezerwacji.</p>
+    }
+    else
+    {
+        var sortedAppointments = Model.OrderBy(a => a.AppointmentDate >= DateTime.Now ? 0 : 1)
+        .ThenBy(a => a.AppointmentDate).ToList();
+
+        <table class="table table-bordered mt-2">
             <thead>
                 <tr>
                     <th>Salon</th>
                     <th>Usługa</th>
                     <th>Data</th>
+                    <th>Ocena</th>
                     <th>Akcje</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var appointment in Model)
+                @foreach (var appointment in sortedAppointments)
                 {
                     <tr>
                         <td>@appointment.Salon.Name</td>
                         <td>@appointment.Service</td>
-                        <td>@appointment.AppointmentDate.ToString("f")</td>
+                        <td>@appointment.AppointmentDate.ToString("dd.MM.yyyy HH:mm")</td>
                         <td>
-                            <form asp-action="CancelAppointment" asp-controller="Appointment" method="post">
-                                <input type="hidden" name="id" value="@appointment.Id" />
-                                <button type="submit" class="btn btn-danger">Odwołaj</button>
-                            </form>
+                            @if (appointment.AppointmentDate < DateTime.Now)
+                            {
+                                <!-- System oceniania wizyty -->
+                                <div class="star-rating" data-appointment-id="@appointment.Id">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        <span class="star @(appointment.Rating >= i ? "selected" : "")" data-value="@i">&#9733;</span>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <p>Brak oceny</p>
+                            }
+                        </td>
+                        <td>
+                            @if (appointment.AppointmentDate > DateTime.Now)
+                            {
+                                <!-- Formularz do odwołania wizyty -->
+                                <form asp-action="CancelAppointment" method="post">
+                                    @Html.AntiForgeryToken() <!-- Dodanie tokenu CSRF -->
+                                    <input type="hidden" name="id" value="@appointment.Id" />
+                                    <button type="submit" class="btn btn-danger">Odwołaj</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <p class="text-muted">Niedostępne</p>
+                            }
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
     }
-    else
-    {
-        <p>Nie masz zarezerwowanych wizyt.</p>
-    }
-    <a class="btn btn-secondary" asp-controller="Home" asp-action="Index">Powrót do strony głównej</a>
+    <a class="btn btn-secondary" asp-controller="Home" asp-action="Index">Powrót do listy salonów</a>
 </div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.star-rating .star').forEach(star => {
+            star.addEventListener('click', function () {
+                const rating = this.getAttribute('data-value');
+                const appointmentId = this.parentElement.getAttribute('data-appointment-id');
+
+                // Zaznacz wybrane gwiazdki
+                this.parentElement.querySelectorAll('.star').forEach(s => {
+                    s.classList.remove('selected');
+                    if (s.getAttribute('data-value') <= rating) {
+                        s.classList.add('selected');
+                    }
+                });
+
+                // Pobierz token CSRF
+                const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+                // Wysyłanie oceny do serwera (AJAX)
+                fetch(`/Appointment/RateAppointment`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': token // Token CSRF
+                    },
+                    body: JSON.stringify({
+                        appointmentId: appointmentId,
+                        rating: rating
+                    })
+                }).then(response => {
+                    if (response.ok) {
+                        alert('Dziękujemy za ocenę!');
+                    } else {
+                        alert('Wystąpił błąd przy przesyłaniu oceny.');
+                    }
+                });
+            });
+        });
+    </script>
+}
