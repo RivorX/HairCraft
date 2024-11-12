@@ -1,5 +1,9 @@
 ﻿@model IEnumerable<HAIRCRAFT.Models.Appointment>
 
+<div id="csrfToken" style="display: none;">
+    @Html.AntiForgeryToken()
+</div>
+
 @{
     var token = @Html.AntiForgeryToken().ToString(); // Pobranie tokenu CSRF z formularza
 }
@@ -115,8 +119,20 @@
             <tbody>
                 @foreach (var appointment in sortedAppointments)
                 {
+                    var totalRatings = appointment.Salon.Appointments.Count(a => a.Rating.HasValue);
+                    var averageRating = totalRatings > 0 ? appointment.Salon.Appointments.Where(a => a.Rating.HasValue).Average(a => a.Rating.Value) : 0;
+
                     <tr>
-                        <td>@appointment.Salon.Name</td>
+                        <td>@appointment.Salon.Name
+                            @if (totalRatings > 0)
+                            {
+                                <span>(@totalRatings ocen, Średnia: @averageRating.ToString("0.0") &#9733;)</span>
+                            }
+                            else
+                            {
+                                <span>(Brak ocen)</span>
+                            }
+                        </td>
                         <td>@appointment.Service</td>
                         <td>@appointment.AppointmentDate.ToString("dd.MM.yyyy HH:mm")</td>
                         <td>
@@ -160,41 +176,48 @@
 
 @section Scripts {
     <script>
-        document.querySelectorAll('.star-rating .star').forEach(star => {
-            star.addEventListener('click', function () {
-                const rating = this.getAttribute('data-value');
-                const appointmentId = this.parentElement.getAttribute('data-appointment-id');
+        document.addEventListener('DOMContentLoaded', function () {
+            const stars = document.querySelectorAll('.star-rating .star');
+            stars.forEach(star => {
+                star.addEventListener('click', async function () {
+                    const rating = this.getAttribute('data-value');
+                    const appointmentId = this.closest('.star-rating').getAttribute('data-appointment-id');
 
-                // Zaznacz wybrane gwiazdki
-                this.parentElement.querySelectorAll('.star').forEach(s => {
-                    s.classList.remove('selected');
-                    if (s.getAttribute('data-value') <= rating) {
-                        s.classList.add('selected');
-                    }
-                });
+                    try {
+                        const response = await fetch('/Appointment/RateAppointment', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                            },
+                            body: JSON.stringify({ AppointmentId: appointmentId, Rating: rating })
+                        });
 
-                // Pobierz token CSRF
-                const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                        if (response.ok) {
+                            alert('Ocena została zapisana.');
 
-                // Wysyłanie oceny do serwera (AJAX)
-                fetch(`/Appointment/RateAppointment`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'RequestVerificationToken': token // Token CSRF
-                    },
-                    body: JSON.stringify({
-                        appointmentId: appointmentId,
-                        rating: rating
-                    })
-                }).then(response => {
-                    if (response.ok) {
-                        alert('Dziękujemy za ocenę!');
-                    } else {
-                        alert('Wystąpił błąd przy przesyłaniu oceny.');
+                            // Aktualizacja wyświetlania gwiazdek po udanym zapisaniu oceny
+                            const starContainer = this.closest('.star-rating');
+                            const allStars = starContainer.querySelectorAll('.star');
+
+                            allStars.forEach(star => {
+                                const starValue = star.getAttribute('data-value');
+                                if (starValue <= rating) {
+                                    star.classList.add('selected');
+                                } else {
+                                    star.classList.remove('selected');
+                                }
+                            });
+                        } else {
+                            alert('Wystąpił błąd podczas zapisywania oceny.');
+                        }
+                    } catch (error) {
+                        console.error('Błąd:', error);
+                        alert('Wystąpił problem z połączeniem.');
                     }
                 });
             });
         });
+
     </script>
 }

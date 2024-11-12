@@ -3,6 +3,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+// Dodajemy us³ugê logowania
+builder.Services.AddLogging(config =>
+{
+    config.AddConsole(); // Dodaj logowanie do konsoli
+    config.AddDebug();   // Dodaj logowanie do debugowania
+    config.AddEventSourceLogger(); // Opcjonalnie dla bardziej zaawansowanego logowania
+});
 
 // Dodaj kontekst bazy danych
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

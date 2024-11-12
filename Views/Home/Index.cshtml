@@ -175,7 +175,23 @@
                     <div class="card h-100 card-border-hover">
                         <div class="card-body">
                             <h5 class="card-title">@salon.Name</h5>
+                                               <!-- Sprawdzanie, czy średnia ocena jest dostępna -->
+                    @if (salon.AverageRating.HasValue && salon.AverageRating.Value > 0)
+                    {
+                        <div>
+                            @for (int i = 0; i < Math.Round(salon.AverageRating.Value); i++)
+                            {
+                                <i class="fas fa-star"></i>  <!-- Ikona gwiazdki -->
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        
+                    }
+
                             <p class="card-text"><strong>Adres:</strong> @salon.Address</p>
+
                             <p class="card-text">@salon.Description</p>
 
                             <h6>Usługi:</h6>

@@ -24,11 +24,12 @@ namespace HAIRCRAFT.Controllers
         [Authorize(Roles = "Fryzjer")]
         public IActionResult Index()
         {
-            var ownerId = _userManager.GetUserId(User);
-            var salons = _context.Salons.Where(s => s.OwnerId == ownerId).ToList();
+            var salons = _context.Salons.Include(s => s.Appointments).ToList();  // Załaduj salony i powiązane wizyty
             return View(salons);
         }
-        
+
+
+
 
         // Akcja dla widoku "Mój Salon"
         public async Task<IActionResult> Details(int id)
@@ -166,15 +167,21 @@ namespace HAIRCRAFT.Controllers
             // Pobierz zalogowanego użytkownika
             var ownerId = _userManager.GetUserId(User);
             var salon = await _context.Salons
-                .Include(s => s.Appointments)
-                .ThenInclude(a => a.Client) // Pobieramy klienta powiązanego z rezerwacją
-                .FirstOrDefaultAsync(s => s.Id == salonId);
+                   .Include(s => s.Appointments)
+                   .ThenInclude(a => a.Client)
+                   .FirstOrDefaultAsync(s => s.Id == salonId);
 
             // Sprawdź, czy salon należy do zalogowanego fryzjera
             if (salon == null || salon.OwnerId != ownerId)
             {
-                return Forbid();
+                return NotFound();
             }
+
+            var totalRatings = salon.Appointments.Count(a => a.Rating.HasValue);
+            var averageRating = totalRatings > 0 ? salon.Appointments.Where(a => a.Rating.HasValue).Average(a => a.Rating.Value) : 0;
+
+            ViewBag.TotalRatings = totalRatings;
+            ViewBag.AverageRating = averageRating;
 
             // Pobierz rezerwacje wraz z powiązanymi informacjami o kliencie
             var appointments = await _context.Appointments
@@ -187,15 +194,6 @@ namespace HAIRCRAFT.Controllers
             ViewBag.SalonId = salonId;
             return View(appointments);
         }
-
-
-
-
-
-
-
-
-
 
         //-------------------------------------------------------------------------------- Usługi --------------------------------------------------------------------------------
         // Formularz dodawania nowej usługi

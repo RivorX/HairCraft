@@ -13,6 +13,16 @@ namespace HAIRCRAFT.Models
         public string OwnerId { get; set; }
         public ICollection<Service> Services { get; set; } = new List<Service>(); // Dodajemy kolekcję usług
         public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();   // Dodajemy kolekcję wizyt
+        public double? AverageRating
+        {
+            get
+            {
+                if (Appointments == null || Appointments.Count == 0)
+                    return null;
 
-    }
+                return Appointments.Average(a => a.Rating);
+            }
+        }
+
+        }
 }
